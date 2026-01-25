@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Comic Neue', cursive;
+  background-color: #F7FFF7;
+  color: #292F36;
+  overscroll-behavior: none; /* Prevent pull-to-refresh on mobile */
+  user-select: none; /* Prevent text selection */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom unexpected behavior prevention for kids */
+img {
+    pointer-events: none;
+}
