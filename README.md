@@ -1,16 +1,54 @@
-# React + Vite
+# Nursery Lab 🧸🧪
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A fun, interactive Progressive Web App (PWA) designed to teach 3-year-olds counting, math, letters, and more!
 
-Currently, two official plugins are available:
+🚀 **[Play Live Here](https://hadefuwa.github.io/nursery-lab/)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🎮 Features
 
-## React Compiler
+This app includes a variety of educational games tailored for toddlers:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **🗣️ Count Aloud**: Interactive counting (1-10 & 1-20) with voice guidance.
+- **🍎 Object Counting**: Count 20 items (stars, fruits, cars) by tapping them.
+- **➕ Math Fun**: Simple addition and subtraction with visual aids.
+- **🔤 Symbol Recognition**: Learn numbers (0-20) and letters (A-Z).
+- **⌨️ Typing Fun**: A safe, virtual keyboard game to learn letter locations.
+- **🖱️ Clicking Game**: Improve fine motor skills by popping balloons.
+- **🟦 Sorting**: Categorize items by color and shape.
+- **🎨 Drawing**: A simple canvas for creativity.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Framework**: React + Vite
+- **Styling**: Tailwind CSS
+- **PWA**: `vite-plugin-pwa` (Installable on mobile/desktop)
+- **Speech**: Web Speech API for TTS
+- **Deployment**: GitHub Pages
+
+## 📦 Run Locally
+
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/hadefuwa/nursery-lab.git
+   ```
+2. Install dependencies:
+   ```bash
+   cd nursery-lab
+   npm install
+   ```
+3. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+## 🚀 Deployment
+
+To deploy updates to GitHub Pages:
+
+```bash
+npm run deploy
+```
+
+## 📄 License
+
+MIT
