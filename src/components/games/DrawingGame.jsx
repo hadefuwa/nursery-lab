@@ -33,12 +33,14 @@ const DrawingGame = () => {
         // Initial init
         initCanvas();
 
-        // Resize observer to handle layout shifts properly
-        const resizeObserver = new ResizeObserver(() => {
-            // We verify if dimensions actually changed significantly to avoid loop
-            const canvas = canvasRef.current;
-            const container = containerRef.current;
-            if (canvas && container && (canvas.width !== container.offsetWidth || canvas.height !== container.offsetHeight)) {
+        // Resize observer 
+        const resizeObserver = new ResizeObserver((entries) => {
+            // Only re-init if size genuinely changes to avoid loop
+            if (!canvasRef.current || !containerRef.current) return;
+
+            // Check if dimensions actually drifted
+            const { width, height } = entries[0].contentRect;
+            if (Math.abs(canvasRef.current.width - width) > 5 || Math.abs(canvasRef.current.height - height) > 5) {
                 initCanvas();
             }
         });
@@ -104,10 +106,10 @@ const DrawingGame = () => {
     const colors = ['#06b6d4', '#ef4444', '#22c55e', '#eab308', '#a855f7', '#ec4899', '#ffffff'];
 
     return (
-        <div className="flex flex-col items-center h-full gap-4 w-full p-4">
+        <div className="flex flex-col items-center h-full gap-4 w-full p-4 overflow-hidden">
 
             {/* Header / Template */}
-            <div className="flex justify-between items-center w-full max-w-6xl gap-4">
+            <div className="flex justify-between items-center w-full max-w-6xl gap-4 shrink-0">
                 <div className="flex items-center gap-6">
                     <h2 className="text-2xl font-bold text-white tracking-widest uppercase hidden md:flex items-center gap-3">
                         <FaPaintBrush className="text-cyan-400" /> Draw This House
@@ -135,7 +137,7 @@ const DrawingGame = () => {
             </div>
 
             {/* Toolbar */}
-            <div className="flex flex-wrap justify-between gap-4 p-3 bg-gray-900 border border-white/10 rounded-2xl shadow-xl w-full max-w-6xl items-center">
+            <div className="flex flex-wrap justify-between gap-4 p-3 bg-gray-900 border border-white/10 rounded-2xl shadow-xl w-full max-w-6xl items-center shrink-0">
                 {/* Colors */}
                 <div className="flex gap-2">
                     {colors.map(c => (
@@ -161,14 +163,15 @@ const DrawingGame = () => {
                 </div>
             </div>
 
-            {/* Canvas */}
+            {/* Canvas Container - FIXED layout structure to prevent infinite loop */}
             <div
                 ref={containerRef}
-                className="flex-1 w-full max-w-6xl h-[650px] min-h-[60vh] rounded-3xl overflow-hidden touch-none border-2 border-white/10 relative shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+                className="w-full max-w-6xl h-[600px] rounded-3xl overflow-hidden touch-none border-2 border-white/10 relative shadow-[0_0_30px_rgba(0,0,0,0.5)] shrink-0"
             >
+                {/* Canvas is absolutely positioned to ensure it doesn't push the container size */}
                 <canvas
                     ref={canvasRef}
-                    className="w-full h-full cursor-crosshair active:cursor-none block"
+                    className="absolute inset-0 w-full h-full cursor-crosshair active:cursor-none block"
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
