@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTTS } from '../../hooks/useTTS';
-import { FaAppleAlt, FaCar, FaStar } from 'react-icons/fa';
+import { FaAppleAlt, FaStar, FaCalculator, FaMinus, FaPlus } from 'react-icons/fa';
 
 const MathGame = () => {
     const { speak } = useTTS();
@@ -14,8 +14,7 @@ const MathGame = () => {
         // Equations within 5
         if (currentMode.includes('add')) {
             a = Math.floor(Math.random() * 4) + 1; // 1-4
-            b = Math.floor(Math.random() * (5 - a)) + 1; // ensure sum <= 5 (actually requirement is within 5 meaning sum <= 5 usually, or operands <= 5? "Add within 5" usually means sum <= 5 or operands <= 5. I will assume sum <= 5 for 3yo).
-            // Let's stick to sum <= 5 for simplicity for 3yo.
+            b = Math.floor(Math.random() * (5 - a)) + 1; // ensure sum <= 5.
             if (a + b > 5) b = 5 - a;
             if (b < 0) b = 0;
             ans = a + b;
@@ -61,10 +60,10 @@ const MathGame = () => {
 
     const renderObjects = (count, isSubtraction = false, crossedOut = 0) => {
         return Array.from({ length: count }).map((_, i) => (
-            <div key={i} className={`relative text-5xl text-red-500 transition-all ${isSubtraction && i >= count - crossedOut ? 'opacity-50 grayscale' : ''}`}>
+            <div key={i} className={`relative text-4xl md:text-6xl text-red-500 transition-all duration-500 ${isSubtraction && i >= count - crossedOut ? 'opacity-30 grayscale blur-sm' : 'drop-shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'}`}>
                 <FaAppleAlt />
                 {isSubtraction && i >= count - crossedOut && (
-                    <div className="absolute inset-0 flex items-center justify-center text-dark text-6xl font-bold -mt-2">
+                    <div className="absolute inset-0 flex items-center justify-center text-white text-5xl md:text-7xl font-bold -mt-2">
                         /
                     </div>
                 )}
@@ -73,56 +72,71 @@ const MathGame = () => {
     };
 
     return (
-        <div className="flex flex-col items-center h-full gap-4">
+        <div className="flex flex-col items-center h-full gap-8 p-4">
             {/* Mode Switcher */}
-            <div className="flex gap-2 mb-4 bg-white/50 p-2 rounded-2xl">
-                <button onClick={() => setMode('add-objects')} className={`px-4 py-2 rounded-xl font-bold ${mode === 'add-objects' ? 'bg-primary text-white' : 'bg-white text-secondary'}`}>
-                    Add Objects
+            <div className="flex flex-wrap justify-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/10 backdrop-blur-sm">
+                <button
+                    onClick={() => setMode('add-objects')}
+                    className={`px-5 py-3 rounded-xl font-bold transition-all ${mode === 'add-objects' ? 'bg-cyan-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.4)]' : 'bg-transparent text-gray-400 hover:text-white'}`}
+                >
+                    <FaPlus className="inline mr-2" /> Objects
                 </button>
-                <button onClick={() => setMode('add-mental')} className={`px-4 py-2 rounded-xl font-bold ${mode === 'add-mental' ? 'bg-primary text-white' : 'bg-white text-secondary'}`}>
-                    Mental Math
+                <button
+                    onClick={() => setMode('add-mental')}
+                    className={`px-5 py-3 rounded-xl font-bold transition-all ${mode === 'add-mental' ? 'bg-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.4)]' : 'bg-transparent text-gray-400 hover:text-white'}`}
+                >
+                    <FaCalculator className="inline mr-2" /> Mental
                 </button>
-                <button onClick={() => setMode('sub-objects')} className={`px-4 py-2 rounded-xl font-bold ${mode === 'sub-objects' ? 'bg-primary text-white' : 'bg-white text-secondary'}`}>
-                    Subtract
+                <button
+                    onClick={() => setMode('sub-objects')}
+                    className={`px-5 py-3 rounded-xl font-bold transition-all ${mode === 'sub-objects' ? 'bg-pink-500 text-white shadow-[0_0_20px_rgba(236,72,153,0.4)]' : 'bg-transparent text-gray-400 hover:text-white'}`}
+                >
+                    <FaMinus className="inline mr-2" /> Subtract
                 </button>
             </div>
 
             {/* Question Area */}
-            <div className="flex-1 w-full max-w-4xl flex flex-col items-center justify-center bg-white rounded-3xl shadow-xl p-8 relative overflow-hidden">
+            <div className="flex-1 w-full max-w-4xl flex flex-col items-center justify-center card-neon p-8 md:p-12 relative">
+
+                {/* Visual Representation */}
                 {mode !== 'add-mental' && (
-                    <div className="flex items-center gap-8 mb-8 bg-blue-50 p-6 rounded-2xl border-4 border-blue-100">
+                    <div className="flex items-center gap-6 md:gap-12 mb-10 bg-black/40 p-8 rounded-3xl border border-white/5 min-h-[160px] justify-center w-full">
                         {mode === 'add-objects' ? (
                             <>
-                                <div className="flex gap-2">{renderObjects(problem.a)}</div>
-                                <span className="text-4xl font-bold text-gray-400">+</span>
-                                <div className="flex gap-2">{renderObjects(problem.b)}</div>
+                                <div className="flex gap-3">{renderObjects(problem.a)}</div>
+                                <span className="text-5xl font-black text-gray-600">+</span>
+                                <div className="flex gap-3">{renderObjects(problem.b)}</div>
                             </>
                         ) : (
-                            <div className="flex gap-2">
+                            <div className="flex gap-4">
                                 {renderObjects(problem.a, true, problem.b)}
                             </div>
                         )}
                     </div>
                 )}
 
-                <div className="text-6xl font-bold text-dark mb-12 flex items-center gap-4">
+                {/* Equation Display */}
+                <div className="text-7xl md:text-9xl font-black text-white mb-16 flex items-center gap-6 md:gap-8 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">
                     <span>{problem.a}</span>
-                    <span className="text-accent">{mode.includes('add') ? '+' : '-'}</span>
+                    <span className="text-cyan-400">{mode.includes('add') ? '+' : '-'}</span>
                     <span>{problem.b}</span>
-                    <span>=</span>
-                    <span className="bg-gray-200 px-6 py-2 rounded-xl min-w-[3ch] text-center">?</span>
+                    <span className="text-gray-500">=</span>
+                    <span className="bg-white/10 px-8 py-2 rounded-2xl min-w-[3ch] text-center border-2 border-dashed border-white/20 text-cyan-200">?</span>
                 </div>
 
                 {/* Options */}
-                <div className="grid grid-cols-3 gap-6 w-full max-w-2xl">
+                <div className="grid grid-cols-3 gap-6 w-full max-w-2xl z-10">
                     {options.map((opt) => (
                         <button
                             key={opt}
                             onClick={() => handleAnswer(opt)}
                             className={`
-                            text-5xl font-bold py-8 rounded-2xl shadow-lg transition-transform active:scale-95
-                            ${feedback === 'correct' && opt === problem.ans ? 'bg-green-500 text-white animate-bounce' : 'bg-white text-dark hover:bg-gray-50'}
-                            ${feedback === 'wrong' && opt !== problem.ans ? 'opacity-50' : ''}
+                            text-6xl md:text-7xl font-bold py-10 rounded-2xl transition-all duration-300 transform
+                            ${feedback === 'correct' && opt === problem.ans
+                                    ? 'bg-green-500 text-white shadow-[0_0_50px_rgba(34,197,94,0.6)] scale-110 !border-green-400 border-4'
+                                    : 'bg-gray-800 text-white border-2 border-white/10 hover:border-cyan-400 hover:shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:-translate-y-2'
+                                }
+                            ${feedback === 'wrong' && opt !== problem.ans ? 'opacity-20 scale-90 grayscale' : ''}
                         `}
                         >
                             {opt}
@@ -131,8 +145,8 @@ const MathGame = () => {
                 </div>
 
                 {feedback === 'correct' && (
-                    <div className="absolute top-10 right-10 text-yellow-500 animate-spin-slow">
-                        <FaStar size={80} />
+                    <div className="absolute top-10 right-10 text-yellow-400 animate-spin-slow drop-shadow-[0_0_30px_rgba(250,204,21,0.6)]">
+                        <FaStar size={100} />
                     </div>
                 )}
             </div>

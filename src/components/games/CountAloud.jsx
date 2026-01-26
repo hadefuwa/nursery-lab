@@ -1,102 +1,173 @@
-import React, { useState, useEffect } from 'react';
-import { useTTS } from '../../hooks/useTTS';
-import { FaPlay, FaPause, FaRedo } from 'react-icons/fa';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { FaPlay, FaSync, FaTimes } from 'react-icons/fa';
 
 const CountAloud = () => {
-    const { speak, cancel, speaking } = useTTS();
     const [currentNumber, setCurrentNumber] = useState(0);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [mode, setMode] = useState(10); // 10 or 20
+    const [isStarted, setIsStarted] = useState(false);
+    const [isFinished, setIsFinished] = useState(false);
+
+    // Refs for synch access in callbacks
+    const isStartedRef = useRef(false);
+    const synth = useRef(window.speechSynthesis);
+    const voiceRef = useRef(null);
 
     useEffect(() => {
-        return () => cancel(); // Cleanup on unmount
-    }, [cancel]);
+        // Load voices
+        const loadVoices = () => {
+            const voices = synth.current.getVoices();
+            // Try to find a nice English female voice
+            const preferred = voices.find(v => v.name.includes('Google US English') || v.name.includes('Samantha') || (v.lang.startsWith('en') && v.name.includes('Female')));
+            voiceRef.current = preferred || voices.find(v => v.lang.startsWith('en')) || voices[0];
+        };
 
-    useEffect(() => {
-        if (isPlaying && !speaking) {
-            if (currentNumber < mode) {
-                const nextNum = currentNumber + 1;
-                // Small delay between numbers
-                const timer = setTimeout(() => {
-                    setCurrentNumber(nextNum);
-                    speak(nextNum.toString());
-                }, 1500); // 1.5s delay
-                return () => clearTimeout(timer);
-            } else {
-                setIsPlaying(false);
-                setTimeout(() => speak("Great job! You counted to " + mode + "!"), 1000);
-            }
+        if (synth.current.onvoiceschanged !== undefined) {
+            synth.current.onvoiceschanged = loadVoices;
         }
-    }, [isPlaying, speaking, currentNumber, mode, speak]);
+        loadVoices();
+
+        return () => {
+            synth.current.cancel();
+            isStartedRef.current = false;
+        };
+    }, []);
+
+    const speakText = (text, onEnd) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        if (voiceRef.current) {
+            utterance.voice = voiceRef.current;
+        }
+        utterance.rate = 1.0;
+        utterance.pitch = 1.1;
+
+        if (onEnd) {
+            utterance.onend = onEnd;
+        }
+
+        synth.current.speak(utterance);
+    };
+
+    const playNextNumber = useCallback((nextNum) => {
+        // Double check state reference to ensure we didn't stop in the meantime
+        if (!isStartedRef.current) return;
+
+        if (nextNum > 20) {
+            setIsFinished(true);
+            setIsStarted(false);
+            isStartedRef.current = false; // Sync ref
+            speakText("Great job! We finished counting.");
+            return;
+        }
+
+        setCurrentNumber(nextNum);
+
+        const utterance = new SpeechSynthesisUtterance(nextNum.toString());
+        if (voiceRef.current) {
+            utterance.voice = voiceRef.current;
+        }
+        utterance.rate = 1.2;
+        utterance.pitch = 1.1;
+
+        utterance.onend = () => {
+            // 200ms delay before next number, but only if we are still started
+            setTimeout(() => {
+                if (isStartedRef.current) {
+                    playNextNumber(nextNum + 1);
+                }
+            }, 200);
+        };
+
+        synth.current.speak(utterance);
+    }, []);
 
     const handleStart = () => {
+        synth.current.cancel();
         setCurrentNumber(0);
-        setIsPlaying(true);
-        speak("Let's count together! Ready?");
+
+        setIsStarted(true);
+        isStartedRef.current = true; // Set ref immediately
+
+        setIsFinished(false);
+
+        speakText("Three, two, one, go!", () => {
+            // Start counting after intro
+            if (isStartedRef.current) {
+                playNextNumber(1);
+            }
+        });
     };
 
     const handleStop = () => {
-        setIsPlaying(false);
-        cancel();
+        synth.current.cancel();
+        setIsStarted(false);
+        isStartedRef.current = false; // Kill ref immediately
+        setCurrentNumber(0);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full gap-8">
-            <h2 className="text-4xl font-bold text-primary">Count Aloud</h2>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-12">
 
-            {/* Mode Selection */}
-            <div className="flex gap-4">
-                <button
-                    onClick={() => { setMode(10); setCurrentNumber(0); setIsPlaying(false); }}
-                    className={`px-6 py-3 rounded-xl text-xl font-bold transition-transform active:scale-95 ${mode === 10 ? 'bg-secondary text-white ring-4 ring-secondary/50' : 'bg-white text-secondary'}`}
-                >
-                    Count to 10
-                </button>
-                <button
-                    onClick={() => { setMode(20); setCurrentNumber(0); setIsPlaying(false); }}
-                    className={`px-6 py-3 rounded-xl text-xl font-bold transition-transform active:scale-95 ${mode === 20 ? 'bg-secondary text-white ring-4 ring-secondary/50' : 'bg-white text-secondary'}`}
-                >
-                    Count to 20
-                </button>
-            </div>
+            {/* Number Display Container */}
+            <div className="relative w-full max-w-sm aspect-square flex items-center justify-center">
+                {/* Glow Background */}
+                <div className="absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full animate-pulse"></div>
 
-            {/* Number Display */}
-            <div className="w-64 h-64 flex items-center justify-center bg-white rounded-full shadow-2xl border-8 border-accent">
-                <span className="text-9xl font-bold text-dark animate-status">
-                    {currentNumber === 0 ? "?" : currentNumber}
-                </span>
+                {/* Number */}
+                <div key={currentNumber} className="relative z-10 animate-pop">
+                    <span
+                        className="text-[12rem] md:text-[18rem] font-black leading-none filter drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]"
+                        style={{
+                            color: `hsl(${currentNumber * 18}, 100%, 60%)`,
+                            WebkitTextStroke: '4px rgba(255,255,255,0.2)'
+                        }}
+                    >
+                        {currentNumber}
+                    </span>
+                </div>
             </div>
 
             {/* Controls */}
-            <div className="flex gap-6">
-                {!isPlaying ? (
+            <div className="flex flex-col items-center gap-6 z-20">
+                {!isStarted && !isFinished && (
                     <button
                         onClick={handleStart}
-                        className="bg-green-500 hover:bg-green-600 text-white rounded-full p-6 shadow-xl active:translate-y-1 transition-all"
+                        className="btn-neon text-2xl px-12 py-6 flex items-center gap-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:scale-105 transition-all text-white font-black tracking-wider rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.4)]"
                     >
-                        <FaPlay size={40} />
-                    </button>
-                ) : (
-                    <button
-                        onClick={handleStop}
-                        className="bg-red-500 hover:bg-red-600 text-white rounded-full p-6 shadow-xl active:translate-y-1 transition-all"
-                    >
-                        <FaPause size={40} />
+                        <FaPlay /> START COUNTING
                     </button>
                 )}
 
-                <button
-                    onClick={() => speak(currentNumber > 0 ? currentNumber.toString() : "Ready")}
-                    disabled={isPlaying}
-                    className="bg-blue-400 hover:bg-blue-500 text-white rounded-full p-6 shadow-xl active:translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    <FaRedo size={40} />
-                </button>
+                {isStarted && (
+                    <button
+                        onClick={handleStop}
+                        className="px-8 py-4 bg-red-500/20 border-2 border-red-500 text-red-500 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-3 backdrop-blur-md"
+                    >
+                        <FaTimes /> STOP
+                    </button>
+                )}
+
+                {isFinished && (
+                    <div className="flex flex-col items-center gap-4 animate-bounce-slow">
+                        <h3 className="text-3xl font-bold text-green-400 drop-shadow-lg">AWESOME!</h3>
+                        <button
+                            onClick={handleStart}
+                            className="btn-neon text-xl px-10 py-5 flex items-center gap-3"
+                        >
+                            <FaSync /> PLAY AGAIN
+                        </button>
+                    </div>
+                )}
             </div>
 
-            <p className="text-xl text-gray-500 font-bold max-w-md text-center">
-                {isPlaying ? "Listen and repeat after me!" : "Press Play to start counting!"}
-            </p>
+            <style>{`
+                @keyframes pop {
+                    0% { transform: scale(0.5); opacity: 0; }
+                    50% { transform: scale(1.1); }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+                .animate-pop {
+                    animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                }
+            `}</style>
         </div>
     );
 };

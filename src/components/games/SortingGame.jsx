@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
 import { useTTS } from '../../hooks/useTTS';
-import { FaSquare, FaCircle, FaStar } from 'react-icons/fa';
+import { FaSquare, FaCircle, FaStar, FaRedo } from 'react-icons/fa';
 
 // Draggable Item Component
 const DraggableItem = ({ id, type, color, shape }) => {
@@ -17,39 +17,48 @@ const DraggableItem = ({ id, type, color, shape }) => {
 
     const Icon = shape === 'square' ? FaSquare : (shape === 'circle' ? FaCircle : FaStar);
 
-    // Tailwind color map
+    // Tailwind color map with glow effects
     const colorClass = {
-        'red': 'text-red-500',
-        'blue': 'text-blue-500',
-        'green': 'text-green-500',
-        'yellow': 'text-yellow-500'
+        'red': 'text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]',
+        'blue': 'text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]',
+        'green': 'text-green-500 drop-shadow-[0_0_10px_rgba(34,197,94,0.8)]',
+        'yellow': 'text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]'
     }[color];
 
     return (
         <div ref={setNodeRef} style={style} {...listeners} {...attributes} className={`touch-none ${isDragging ? 'opacity-50' : ''}`}>
-            <div className="bg-white p-4 rounded-xl shadow-md active:cursor-grabbing cursor-grab hover:scale-110 transition-transform">
-                <Icon className={`text-5xl ${colorClass}`} />
+            <div className={`
+                bg-gray-800 p-4 rounded-xl border border-white/10 shadow-lg active:cursor-grabbing cursor-grab 
+                hover:scale-110 hover:border-white/30 transition-all duration-300
+                ${isDragging ? 'scale-110 shadow-[0_0_30px_rgba(6,182,212,0.4)] bg-gray-700' : ''}
+            `}>
+                <Icon className={`text-6xl ${colorClass}`} />
             </div>
         </div>
     );
 };
 
 // Droppable Bucket Component
-const Bucket = ({ id, label, accept }) => {
+const Bucket = ({ id, label, accept, accentColor }) => {
     const { setNodeRef, isOver } = useDroppable({
         id: id,
         data: { accept },
     });
 
+    const borderColor = isOver
+        ? (accentColor === 'red' ? 'border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.3)]' : 'border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)]')
+        : 'border-white/20';
+
     return (
         <div
             ref={setNodeRef}
             className={`
-            w-1/2 h-48 md:h-64 rounded-3xl border-4 border-dashed flex items-center justify-center transition-colors
-            ${isOver ? 'bg-green-100 border-green-500 scale-105' : 'bg-white/50 border-gray-300'}
+            w-full h-48 md:h-64 rounded-3xl border-4 border-dashed flex items-center justify-center transition-all duration-300 relative overflow-hidden group
+            ${borderColor} ${isOver ? 'bg-white/5 scale-105' : 'bg-transparent'}
         `}
         >
-            <span className="text-2xl font-bold text-gray-400 pointer-events-none">{label}</span>
+            <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-${accentColor}-500`}></div>
+            <span className="text-2xl font-bold text-gray-500 pointer-events-none uppercase tracking-widest">{label}</span>
         </div>
     );
 };
@@ -71,17 +80,10 @@ const SortingGame = () => {
             // Sort by Color: Red vs Blue
             for (let i = 0; i < 10; i++) {
                 const color = Math.random() > 0.5 ? 'red' : 'blue';
-                newItems.push({ id: `item-${i}`, color, shape: 'square' }); // All squares
+                newItems.push({ id: `item-${i}`, color, shape: 'square' });
             }
             speak("Put red items in the Red box, and blue items in the Blue box.");
         } else {
-            // Sort by Shape: Circle vs Star (ignoring color for simplicity of 2-rule concept or mix)
-            // User request: "Sort 10 items by two rules".
-            // Usually implies 4 groups or sorting by Color AND Shape.
-            // Let's do 4 buckets: Red Star, Red Square, Blue Star, Blue Square is too complex for screen space?
-            // Let's do: Sort by Color (Red/Blue) AND Shape (Circle/Square).
-            // Actually, let's keep it to 2 buckets but complex rule? NO, "Two rules" implies 2 criteria.
-            // Let's do 4 buckets for Level 2.
             const colors = ['red', 'blue'];
             const shapes = ['circle', 'square'];
 
@@ -120,7 +122,7 @@ const SortingGame = () => {
                 setItems((items) => items.filter((i) => i.id !== active.id));
                 setScore(s => s + 1);
                 speak("Good!");
-                if (items.length <= 1) { // Last item just removed
+                if (items.length <= 1) {
                     setTimeout(() => speak("All sorted! You did it!"), 1000);
                 }
             } else {
@@ -130,42 +132,58 @@ const SortingGame = () => {
     };
 
     return (
-        <div className="flex flex-col items-center h-full gap-4">
-            <h2 className="text-3xl font-bold text-secondary">Sorting Game {level === 2 ? '(Hard)' : ''}</h2>
+        <div className="flex flex-col items-center h-full gap-8 p-4">
 
-            {/* Level Switcher */}
-            <div className="flex gap-4">
-                <button onClick={() => setLevel(1)} className={`px-4 py-2 rounded-xl ${level === 1 ? 'bg-primary text-white' : 'bg-white'}`}>Color Sort</button>
-                <button onClick={() => setLevel(2)} className={`px-4 py-2 rounded-xl ${level === 2 ? 'bg-primary text-white' : 'bg-white'}`}>Color & Shape</button>
+            {/* Header */}
+            <div className="flex justify-between items-center w-full max-w-4xl bg-gray-900 border border-white/10 p-6 rounded-3xl shadow-lg">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-400 uppercase tracking-widest mb-1">Sorting Mission</h2>
+                    <div className="text-sm text-cyan-500 font-bold">{level === 1 ? 'LEVEL 1: COLOR CODES' : 'LEVEL 2: SHAPE MATCH'}</div>
+                </div>
+
+                {/* Level Switcher pills */}
+                <div className="flex bg-black/40 p-1.5 rounded-xl border border-white/5">
+                    <button onClick={() => setLevel(1)} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${level === 1 ? 'bg-cyan-600 text-white shadow-lg' : 'text-gray-500 hover:text-white'}`}>Colors</button>
+                    <button onClick={() => setLevel(2)} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${level === 2 ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-500 hover:text-white'}`}>Shapes</button>
+                </div>
             </div>
 
             {/* Buckets */}
             <DndContext onDragEnd={handleDragEnd}>
-                <div className={`grid gap-4 w-full max-w-4xl p-4 ${level === 1 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
+                <div className={`grid gap-6 w-full max-w-5xl ${level === 1 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
                     {level === 1 ? (
                         <>
-                            <Bucket id="bucket-red" label="Red Items" accept={{ color: 'red' }} />
-                            <Bucket id="bucket-blue" label="Blue Items" accept={{ color: 'blue' }} />
+                            <Bucket id="bucket-red" label="Red Zone" accept={{ color: 'red' }} accentColor="red" />
+                            <Bucket id="bucket-blue" label="Blue Zone" accept={{ color: 'blue' }} accentColor="blue" />
                         </>
                     ) : (
                         <>
-                            <Bucket id="b-r-c" label="Red Circle" accept={{ color: 'red', shape: 'circle' }} />
-                            <Bucket id="b-r-s" label="Red Square" accept={{ color: 'red', shape: 'square' }} />
-                            <Bucket id="b-b-c" label="Blue Circle" accept={{ color: 'blue', shape: 'circle' }} />
-                            <Bucket id="b-b-s" label="Blue Square" accept={{ color: 'blue', shape: 'square' }} />
+                            <Bucket id="b-r-c" label="Red Circle" accept={{ color: 'red', shape: 'circle' }} accentColor="red" />
+                            <Bucket id="b-r-s" label="Red Square" accept={{ color: 'red', shape: 'square' }} accentColor="red" />
+                            <Bucket id="b-b-c" label="Blue Circle" accept={{ color: 'blue', shape: 'circle' }} accentColor="blue" />
+                            <Bucket id="b-b-s" label="Blue Square" accept={{ color: 'blue', shape: 'square' }} accentColor="blue" />
                         </>
                     )}
                 </div>
 
-                {/* Items Pool */}
-                <div className="flex flex-wrap justify-center gap-4 bg-gray-100/50 p-6 rounded-3xl w-full min-h-[150px]">
-                    {items.length === 0 ? (
-                        <div className="text-2xl font-bold text-green-500 animate-bounce">Sorted!</div>
-                    ) : (
-                        items.map((item) => (
-                            <DraggableItem key={item.id} {...item} />
-                        ))
-                    )}
+                {/* Items Pool with glow effect background */}
+                <div className="relative w-full max-w-5xl flex-1 min-h-[200px] flex flex-col justify-end">
+                    <div className="absolute inset-x-0 bottom-0 top-10 bg-gradient-to-t from-cyan-900/20 to-transparent rounded-t-[50px] -z-10"></div>
+
+                    <div className="flex flex-wrap justify-center gap-6 p-8 pb-12 w-full">
+                        {items.length === 0 ? (
+                            <div className="flex flex-col items-center animate-bounce">
+                                <span className="text-6xl text-green-500 font-black drop-shadow-[0_0_20px_rgba(34,197,94,0.6)]">mission complete</span>
+                                <button onClick={() => generateItems(level)} className="mt-6 btn-neon flex items-center gap-3">
+                                    <FaRedo /> Restart System
+                                </button>
+                            </div>
+                        ) : (
+                            items.map((item) => (
+                                <DraggableItem key={item.id} {...item} />
+                            ))
+                        )}
+                    </div>
                 </div>
             </DndContext>
         </div>

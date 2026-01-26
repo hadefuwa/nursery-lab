@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synced Mega Count</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #050505;
+            color: white;
+            font-family: 'Arial Black', sans-serif;
+            overflow: hidden;
+        }
+
+        #number-display {
+            font-size: clamp(10rem, 50vw, 30rem);
+            line-height: 1;
+            text-shadow: 0 0 40px rgba(0, 255, 136, 0.2);
+        }
+
+        .pop {
+            animation: mega-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+        }
+
+        @keyframes mega-pop {
+            0% { transform: scale(0.2); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        button {
+            padding: 20px 50px;
+            font-size: 2rem;
+            cursor: pointer;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+        }
+
+        #status {
+            margin-top: 20px;
+            color: #666;
+            font-family: sans-serif;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="number-display">0</div>
+    <button id="start-btn">START SYNCED COUNT</button>
+    <div id="status">READY</div>
+
+    <script>
+        const display = document.getElementById('number-display');
+        const btn = document.getElementById('start-btn');
+        const statusText = document.getElementById('status');
+        
+        const synth = window.speechSynthesis;
+        let count = 0;
+
+        function nextStep() {
+            if (count < 20) {
+                count++;
+                
+                // 1. Update Visuals
+                display.innerText = count;
+                display.style.color = `hsl(${(count * 20)}, 100%, 60%)`;
+                display.classList.remove('pop');
+                void display.offsetWidth; 
+                display.classList.add('pop');
+
+                // 2. Prepare the Voice
+                const utterance = new SpeechSynthesisUtterance(count.toString());
+                utterance.rate = 1.2; 
+
+                // 3. THE FIX: Only move to the next number AFTER the voice finishes
+                utterance.onend = () => {
+                    // Small pause (200ms) after speaking before showing the next number
+                    setTimeout(nextStep, 200);
+                };
+
+                synth.speak(utterance);
+            } else {
+                statusText.innerText = "FINISHED";
+                btn.style.display = "block";
+                btn.innerText = "PLAY AGAIN";
+            }
+        }
+
+        btn.addEventListener('click', () => {
+            // Clear any lingering speech queue
+            synth.cancel(); 
+            count = 0;
+            btn.style.display = "none";
+            statusText.innerText = "SPEAKING...";
+            nextStep();
+        });
+    </script>
+</body>
+</html>

@@ -1,16 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useTTS } from '../../hooks/useTTS';
-import { FaEraser, FaPalette, FaSave } from 'react-icons/fa';
+import { FaPaintBrush, FaTrash } from 'react-icons/fa';
 
 const DrawingGame = () => {
     const { speak } = useTTS();
     const canvasRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
-    const [color, setColor] = useState('#000000');
+    const [color, setColor] = useState('#06b6d4');
     const [lineWidth, setLineWidth] = useState(5);
 
     useEffect(() => {
-        speak("Draw a house! Does it have a door? And windows?");
+        speak("Can you draw a house like this? A rectangle, a triangle roof, two square windows, and a door!");
         const canvas = canvasRef.current;
         if (canvas) {
             canvas.width = canvas.offsetWidth;
@@ -18,19 +18,10 @@ const DrawingGame = () => {
             const ctx = canvas.getContext('2d');
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height); // White bg
+            // Dark background for neon effect
+            ctx.fillStyle = '#111827';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
-
-        // Resize handler
-        const handleResize = () => {
-            if (canvas) {
-                // Save content? For now just reset on resize or sophisticated redraw.
-                // keeping it simple: clear on resize is standard for simple apps usually, or use temp canvas.
-            }
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     const startDrawing = (e) => {
@@ -45,8 +36,14 @@ const DrawingGame = () => {
         if (!isDrawing) return;
         const { offsetX, offsetY } = getCoords(e);
         const ctx = canvasRef.current.getContext('2d');
+
         ctx.strokeStyle = color;
         ctx.lineWidth = lineWidth;
+
+        // Neon Glow Effect
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = color;
+
         ctx.lineTo(offsetX, offsetY);
         ctx.stroke();
     };
@@ -73,43 +70,76 @@ const DrawingGame = () => {
     const clearCanvas = () => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = '#111827';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        speak("Let's start over!");
+        speak("Let's try again!");
     };
 
-    return (
-        <div className="flex flex-col items-center h-full gap-4 w-full">
-            <h2 className="text-3xl font-bold text-secondary">Draw a House</h2>
+    const colors = ['#06b6d4', '#ef4444', '#22c55e', '#eab308', '#a855f7', '#ec4899', '#ffffff'];
 
-            {/* Toolbar */}
-            <div className="flex gap-4 p-2 bg-white rounded-2xl shadow-sm">
-                <input
-                    type="color"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                    className="w-12 h-12 rounded-full cursor-pointer"
-                />
-                <div className="flex gap-2 items-center border-l pl-4">
-                    {[5, 10, 20].map(w => (
-                        <button
-                            key={w}
-                            onClick={() => setLineWidth(w)}
-                            className={`bg-dark rounded-full ${lineWidth === w ? 'ring-2 ring-accent' : ''}`}
-                            style={{ width: w + 10, height: w + 10 }}
-                        ></button>
-                    ))}
+    return (
+        <div className="flex flex-col items-center h-full gap-4 w-full p-4">
+
+            {/* Header / Template */}
+            <div className="flex justify-between items-center w-full max-w-6xl gap-4">
+                <div className="flex items-center gap-6">
+                    <h2 className="text-2xl font-bold text-white tracking-widest uppercase hidden md:flex items-center gap-3">
+                        <FaPaintBrush className="text-cyan-400" /> Draw This House
+                    </h2>
+
+                    {/* The SVG Template */}
+                    <div className="bg-gray-800 border-2 border-dashed border-white/20 p-2 rounded-xl">
+                        <svg width="60" height="60" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="4" className="text-yellow-400">
+                            {/* Roof */}
+                            <path d="M10 40 L50 5 L90 40" />
+                            {/* Body */}
+                            <rect x="20" y="40" width="60" height="50" />
+                            {/* Door */}
+                            <rect x="42" y="65" width="16" height="25" />
+                            {/* Windows */}
+                            <rect x="28" y="50" width="12" height="12" />
+                            <rect x="60" y="50" width="12" height="12" />
+                        </svg>
+                    </div>
                 </div>
-                <button onClick={clearCanvas} className="bg-red-400 text-white p-3 rounded-xl ml-4">
-                    <FaEraser size={24} />
+
+                <button onClick={clearCanvas} className="bg-red-500/20 text-red-500 border border-red-500/50 px-4 py-2 rounded-xl hover:bg-red-500 hover:text-white transition-colors flex items-center gap-2 font-bold text-sm">
+                    <FaTrash /> CLEAR
                 </button>
             </div>
 
+            {/* Toolbar */}
+            <div className="flex flex-wrap justify-between gap-4 p-3 bg-gray-900 border border-white/10 rounded-2xl shadow-xl w-full max-w-6xl items-center">
+                {/* Colors */}
+                <div className="flex gap-2">
+                    {colors.map(c => (
+                        <button
+                            key={c}
+                            onClick={() => setColor(c)}
+                            className={`w-8 h-8 md:w-10 md:h-10 rounded-full cursor-pointer transition-transform hover:scale-110 shadow-lg ${color === c ? 'ring-2 ring-white scale-110' : ''}`}
+                            style={{ backgroundColor: c, boxShadow: `0 0 10px ${c}` }}
+                        />
+                    ))}
+                </div>
+
+                {/* Brushes */}
+                <div className="flex gap-3 items-center pl-4 border-l border-white/10">
+                    {[5, 12, 25].map(w => (
+                        <button
+                            key={w}
+                            onClick={() => setLineWidth(w)}
+                            className={`bg-gray-700 rounded-full transition-all hover:bg-gray-600 ${lineWidth === w ? 'bg-white ring-2 ring-cyan-500/50' : ''}`}
+                            style={{ width: w * 0.8 + 10, height: w * 0.8 + 10 }}
+                        ></button>
+                    ))}
+                </div>
+            </div>
+
             {/* Canvas */}
-            <div className="flex-1 w-full max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden touch-none border-4 border-dashed border-gray-300 relative group">
+            <div className="flex-1 w-full max-w-6xl rounded-3xl overflow-hidden touch-none border-2 border-white/10 relative shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                 <canvas
                     ref={canvasRef}
-                    className="w-full h-full cursor-crosshair"
+                    className="w-full h-full cursor-crosshair active:cursor-none"
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
@@ -118,9 +148,6 @@ const DrawingGame = () => {
                     onTouchMove={draw}
                     onTouchEnd={stopDrawing}
                 />
-                <div className="absolute inset-0 pointer-events-none flex items-center justify-center opacity-10 group-hover:opacity-0 transition-opacity">
-                    <span className="text-6xl text-gray-300 font-bold -rotate-12">Draw Here!</span>
-                </div>
             </div>
         </div>
     );

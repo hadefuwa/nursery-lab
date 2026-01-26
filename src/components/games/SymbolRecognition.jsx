@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTTS } from '../../hooks/useTTS';
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaFont, FaSortNumericDown } from 'react-icons/fa';
 
 const SymbolRecognition = () => {
     const { speak } = useTTS();
@@ -50,48 +50,58 @@ const SymbolRecognition = () => {
     };
 
     return (
-        <div className="flex flex-col items-center h-full gap-6">
+        <div className="flex flex-col items-center h-full gap-8 p-4">
             {/* Mode & Score */}
-            <div className="flex justify-between w-full max-w-4xl bg-white/50 p-4 rounded-xl items-center">
-                <div className="flex gap-2">
+            <div className="flex flex-wrap justify-between w-full max-w-4xl bg-white/5 p-4 rounded-2xl items-center border border-white/10 backdrop-blur-sm">
+                <div className="flex gap-4">
                     <button
                         onClick={() => { setMode('numbers'); setScore(0); }}
-                        className={`px-6 py-2 rounded-xl font-bold transition-all ${mode === 'numbers' ? 'bg-primary text-white scale-105 shadow-md' : 'bg-white text-secondary'}`}
+                        className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${mode === 'numbers' ? 'bg-cyan-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.5)] scale-105' : 'bg-transparent text-gray-400 hover:text-white border border-white/10'}`}
                     >
-                        123 Numbers
+                        <FaSortNumericDown /> 123 Numbers
                     </button>
                     <button
                         onClick={() => { setMode('letters'); setScore(0); }}
-                        className={`px-6 py-2 rounded-xl font-bold transition-all ${mode === 'letters' ? 'bg-primary text-white scale-105 shadow-md' : 'bg-white text-secondary'}`}
+                        className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${mode === 'letters' ? 'bg-purple-500 text-white shadow-[0_0_20px_rgba(168,85,247,0.5)] scale-105' : 'bg-transparent text-gray-400 hover:text-white border border-white/10'}`}
                     >
-                        ABC Letters
+                        <FaFont /> ABC Letters
                     </button>
                 </div>
-                <div className="flex items-center gap-2 bg-accent px-4 py-2 rounded-full shadow-sm">
-                    <FaStar className="text-white drop-shadow-sm" />
-                    <span className="font-bold text-dark">{score}</span>
+                <div className="flex items-center gap-3 bg-white/10 px-5 py-2 rounded-xl border border-white/5">
+                    <FaStar className="text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+                    <span className="font-black text-2xl text-white">{score}</span>
                 </div>
             </div>
 
             {/* Question Area */}
-            <div className="flex-1 w-full max-w-4xl flex flex-col items-center justify-center p-4">
-                <h2 className="text-3xl font-bold text-dark mb-12 animate-pulse">
-                    Find the {mode === 'numbers' ? 'Numeric' : 'Letter'} <span className="text-primary text-5xl ml-2 inline-block border-b-4 border-dashed border-primary">?</span>
+            <div className="flex-1 w-full max-w-5xl flex flex-col items-center justify-center p-8 card-neon relative">
+
+                {/* Visual Target Hint (Optional, maybe show ? then reveal?) */}
+                <h2 className="text-4xl md:text-5xl font-bold text-white mb-16 text-center tracking-wide drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                    Find the {mode === 'numbers' ? 'Numeric' : 'Letter'} <span className="text-cyan-400 text-6xl ml-4 inline-block animate-bounce">?</span>
                 </h2>
 
                 {/* Options */}
-                <div className="grid grid-cols-3 gap-8 w-full max-w-3xl">
+                <div className="grid grid-cols-3 gap-8 w-full max-w-4xl">
                     {options.map((opt) => (
                         <button
                             key={opt}
                             onClick={() => handleAnswer(opt)}
                             className={`
-                            aspect-square flex items-center justify-center text-8xl font-bold rounded-3xl shadow-[0_10px_0_rgba(0,0,0,0.1)] transition-all active:translate-y-2 active:shadow-none
-                            ${feedback === 'correct' && opt === target ? 'bg-green-500 text-white animate-bounce' : 'bg-white text-dark hover:bg-blue-50'}
-                            ${feedback === 'wrong' && opt !== target ? 'opacity-30 scale-95' : ''}
+                            aspect-square flex items-center justify-center text-8xl md:text-9xl font-black rounded-3xl transition-all duration-300 relative overflow-hidden group
+                            ${feedback === 'correct' && opt === target
+                                    ? 'bg-green-500 text-white shadow-[0_0_50px_rgba(34,197,94,0.6)] scale-110 z-10'
+                                    : 'bg-gray-800 text-white border-2 border-white/10 hover:border-cyan-400 hover:shadow-[0_0_40px_rgba(6,182,212,0.3)] hover:-translate-y-2'
+                                }
+                            ${feedback === 'wrong' && opt !== target ? 'opacity-20 scale-90 grayscale' : ''}
                         `}
                         >
-                            {opt}
+                            {/* Inner Glow for normal state */}
+                            {feedback !== 'correct' && (
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            )}
+
+                            <span className="relative z-10 filter drop-shadow-lg">{opt}</span>
                         </button>
                     ))}
                 </div>
