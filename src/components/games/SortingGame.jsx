@@ -90,15 +90,19 @@ const SortingGame = () => {
 
     // Level Config
     const getLevelConfig = (lvl) => {
-        // Level 1: Red vs Blue Squares
-        // Level 2: Red vs Blue Circles/Squares (4 buckets or 2 buckets sorted by shape only?)
-        // Let's stick to the buckets setup: 
-        // Level 2 was "Color AND Shape" with 4 buckets.
+        // Level 1: Red vs Blue (Color) - Squares only (simple)
+        if (lvl === 1) return { mode: 'color', buckets: 2, shapes: ['square'], colors: ['red', 'blue'] };
 
-        if (lvl === 1) return { mode: 'color', buckets: 2 };
-        if (lvl === 2) return { mode: 'color-shape', buckets: 4 };
-        // Future levels could be sorting by just shape (Circle vs Square vs Star) or 3 colors.
-        return { mode: 'color-shape', buckets: 4 };
+        // Level 2: Red vs Blue (Color + Shape) - Circle vs Square
+        if (lvl === 2) return { mode: 'color-shape', buckets: 4, shapes: ['circle', 'square'], colors: ['red', 'blue'] };
+
+        // Level 3: Just Shapes (Red Color Fixed) - Circle, Square, Star
+        if (lvl === 3) return { mode: 'shape', buckets: 3, shapes: ['circle', 'square', 'star'], colors: ['red'] };
+
+        // Level 4: Complex (Blue) - Circle, Square, Star
+        if (lvl >= 4) return { mode: 'shape', buckets: 3, shapes: ['circle', 'square', 'star'], colors: ['blue'] };
+
+        return { mode: 'color', buckets: 2, shapes: ['square'], colors: ['red', 'blue'] };
     };
 
     // Initialize Items
@@ -109,27 +113,19 @@ const SortingGame = () => {
     const generateItems = (lvl) => {
         const newItems = [];
         const config = getLevelConfig(lvl);
+        const { colors, shapes } = config;
 
-        if (config.mode === 'color') {
-            // Sort by Color: Red vs Blue
-            for (let i = 0; i < 10; i++) {
-                const color = Math.random() > 0.5 ? 'red' : 'blue';
-                newItems.push({ id: `item-${i}`, color, shape: 'square' });
-            }
-            speak("Put red items in the Red box, and blue items in the Blue box.");
-        } else {
-            const colors = ['red', 'blue'];
-            const shapes = ['circle', 'square'];
-
-            for (let i = 0; i < 12; i++) {
-                newItems.push({
-                    id: `item-${i}`,
-                    color: colors[Math.floor(Math.random() * 2)],
-                    shape: shapes[Math.floor(Math.random() * 2)],
-                });
-            }
-            speak("Sort by Color AND Shape!");
+        for (let i = 0; i < 12; i++) {
+            // For level 1 we just want random colors from the allowed list
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            newItems.push({ id: `item-${i}`, color, shape });
         }
+
+        if (config.mode === 'color') speak("Sort by Color!");
+        else if (config.mode === 'shape') speak("Sort by Shape!");
+        else speak("Sort by Color AND Shape!");
+
         setItems(newItems);
     };
 
@@ -140,12 +136,13 @@ const SortingGame = () => {
             const itemData = active.data.current;
             const bucketData = over.data.current;
 
-            // Validation Logic
             let correct = false;
             const config = getLevelConfig(currentLevel);
 
             if (config.mode === 'color') {
                 if (bucketData.accept.color === itemData.color) correct = true;
+            } else if (config.mode === 'shape') {
+                if (bucketData.accept.shape === itemData.shape) correct = true;
             } else {
                 if (bucketData.accept.color === itemData.color && bucketData.accept.shape === itemData.shape) correct = true;
             }
@@ -184,7 +181,7 @@ const SortingGame = () => {
 
                 {/* Level Pips */}
                 <div className="flex gap-2 p-2 rounded-xl bg-black/20">
-                    {[1, 2].map(lvl => {
+                    {[1, 2, 3, 4].map(lvl => {
                         const unlocked = lvl <= progress.maxLevel;
                         const active = lvl === currentLevel;
                         return (
@@ -206,13 +203,23 @@ const SortingGame = () => {
 
             {/* Buckets */}
             <DndContext onDragEnd={handleDragEnd}>
-                <div className={`grid gap-6 w-full max-w-5xl ${getLevelConfig(currentLevel).buckets === 2 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
-                    {getLevelConfig(currentLevel).mode === 'color' ? (
+                <div className={`grid gap-6 w-full max-w-5xl ${getLevelConfig(currentLevel).buckets === 2 ? 'grid-cols-2' : getLevelConfig(currentLevel).buckets === 3 ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-4'}`}>
+                    {getLevelConfig(currentLevel).mode === 'color' && (
                         <>
                             <Bucket id="bucket-red" label="Red Zone" accept={{ color: 'red' }} accentColor="red" />
                             <Bucket id="bucket-blue" label="Blue Zone" accept={{ color: 'blue' }} accentColor="blue" />
                         </>
-                    ) : (
+                    )}
+
+                    {getLevelConfig(currentLevel).mode === 'shape' && (
+                        <>
+                            <Bucket id="b-circle" label="Circle" accept={{ shape: 'circle' }} accentColor={getLevelConfig(currentLevel).colors[0]} />
+                            <Bucket id="b-square" label="Square" accept={{ shape: 'square' }} accentColor={getLevelConfig(currentLevel).colors[0]} />
+                            <Bucket id="b-star" label="Star" accept={{ shape: 'star' }} accentColor={getLevelConfig(currentLevel).colors[0]} />
+                        </>
+                    )}
+
+                    {getLevelConfig(currentLevel).mode === 'color-shape' && (
                         <>
                             <Bucket id="b-r-c" label="Red Circle" accept={{ color: 'red', shape: 'circle' }} accentColor="red" />
                             <Bucket id="b-r-s" label="Red Square" accept={{ color: 'red', shape: 'square' }} accentColor="red" />
