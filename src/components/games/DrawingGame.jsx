@@ -5,16 +5,19 @@ import { FaPaintBrush, FaTrash } from 'react-icons/fa';
 const DrawingGame = () => {
     const { speak } = useTTS();
     const canvasRef = useRef(null);
+    const containerRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [color, setColor] = useState('#06b6d4');
     const [lineWidth, setLineWidth] = useState(5);
 
-    useEffect(() => {
-        speak("Can you draw a house like this? A rectangle, a triangle roof, two square windows, and a door!");
+    const initCanvas = () => {
         const canvas = canvasRef.current;
-        if (canvas) {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+        const container = containerRef.current;
+        if (canvas && container) {
+            // Set internal resolution to match displayed size
+            canvas.width = container.offsetWidth;
+            canvas.height = container.offsetHeight;
+
             const ctx = canvas.getContext('2d');
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
@@ -22,6 +25,29 @@ const DrawingGame = () => {
             ctx.fillStyle = '#111827';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
+    };
+
+    useEffect(() => {
+        speak("Can you draw a house like this? A rectangle, a triangle roof, two square windows, and a door!");
+
+        // Initial init
+        initCanvas();
+
+        // Resize observer to handle layout shifts properly
+        const resizeObserver = new ResizeObserver(() => {
+            // We verify if dimensions actually changed significantly to avoid loop
+            const canvas = canvasRef.current;
+            const container = containerRef.current;
+            if (canvas && container && (canvas.width !== container.offsetWidth || canvas.height !== container.offsetHeight)) {
+                initCanvas();
+            }
+        });
+
+        if (containerRef.current) {
+            resizeObserver.observe(containerRef.current);
+        }
+
+        return () => resizeObserver.disconnect();
     }, []);
 
     const startDrawing = (e) => {
@@ -136,7 +162,10 @@ const DrawingGame = () => {
             </div>
 
             {/* Canvas */}
-            <div className="flex-1 w-full max-w-6xl h-[650px] min-h-[60vh] rounded-3xl overflow-hidden touch-none border-2 border-white/10 relative shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+            <div
+                ref={containerRef}
+                className="flex-1 w-full max-w-6xl h-[650px] min-h-[60vh] rounded-3xl overflow-hidden touch-none border-2 border-white/10 relative shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+            >
                 <canvas
                     ref={canvasRef}
                     className="w-full h-full cursor-crosshair active:cursor-none block"

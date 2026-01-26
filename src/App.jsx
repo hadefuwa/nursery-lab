@@ -48,14 +48,18 @@ const AnimatedRoutes = () => {
   );
 };
 
+import { ProgressProvider } from './context/ProgressContext';
+
 function App() {
   return (
     <HashRouter>
-      <Layout>
-        <Suspense fallback={<div className="text-center p-10 text-2xl font-bold text-gray-400">Loading...</div>}>
-          <AnimatedRoutes />
-        </Suspense>
-      </Layout>
+      <ProgressProvider>
+        <Layout>
+          <Suspense fallback={<div className="text-center p-10 text-2xl font-bold text-gray-400">Loading...</div>}>
+            <AnimatedRoutes />
+          </Suspense>
+        </Layout>
+      </ProgressProvider>
     </HashRouter>
   );
 }

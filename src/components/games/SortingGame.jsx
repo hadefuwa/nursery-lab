@@ -45,20 +45,23 @@ const Bucket = ({ id, label, accept, accentColor }) => {
         data: { accept },
     });
 
-    const borderColor = isOver
-        ? (accentColor === 'red' ? 'border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.3)]' : 'border-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.3)]')
-        : 'border-white/20';
+    // Ensure colors are explicit and vibrant
+    const isRed = accentColor === 'red';
+    const borderColor = isRed ? 'border-red-500' : 'border-blue-500';
+    const bgColor = isRed ? 'bg-red-500/10' : 'bg-blue-500/10';
+    const activeRing = isOver ? (isRed ? 'ring-4 ring-red-400 shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'ring-4 ring-blue-400 shadow-[0_0_40px_rgba(59,130,246,0.4)]') : '';
 
     return (
         <div
             ref={setNodeRef}
             className={`
-            w-full h-48 md:h-64 rounded-3xl border-4 border-dashed flex items-center justify-center transition-all duration-300 relative overflow-hidden group
-            ${borderColor} ${isOver ? 'bg-white/5 scale-105' : 'bg-transparent'}
+            w-full h-48 md:h-64 rounded-3xl border-4 flex items-center justify-center transition-all duration-300 relative overflow-hidden group
+            ${borderColor} ${bgColor} ${activeRing}
+            ${isOver ? 'scale-105' : ''}
         `}
         >
-            <div className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-${accentColor}-500`}></div>
-            <span className="text-2xl font-bold text-gray-500 pointer-events-none uppercase tracking-widest">{label}</span>
+            <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity bg-${accentColor}-500`}></div>
+            <span className={`text-3xl font-black pointer-events-none uppercase tracking-widest ${isRed ? 'text-red-500' : 'text-blue-500'}`}>{label}</span>
         </div>
     );
 };
