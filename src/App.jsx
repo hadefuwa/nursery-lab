@@ -3,6 +3,7 @@ import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
+import Progress from './pages/Progress';
 
 import CountAloud from './components/games/CountAloud';
 import ObjectCount from './components/games/ObjectCount';
@@ -33,6 +34,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
+        <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
 
         {/* Lesson Routes */}
         <Route path="/lesson/count-aloud" element={<PageTransition><CountAloud /></PageTransition>} />

@@ -29,14 +29,19 @@ const Home = () => {
 
     return (
         <div className="flex flex-col items-center justify-center py-12">
-            <div className="text-center mb-20 max-w-3xl relative">
+            <div className="text-center mb-10 max-w-3xl relative">
                 <div className="absolute inset-0 bg-cyan-500/20 blur-[80px] -z-10 rounded-full"></div>
                 <h2 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter drop-shadow-[0_0_25px_rgba(6,182,212,0.5)]">
                     LEVEL SELECT
                 </h2>
-                <p className="text-xl text-cyan-200/70 font-bold tracking-widest uppercase">
-                    Choose your mission
-                </p>
+                <div className="flex flex-col items-center gap-4">
+                    <p className="text-xl text-cyan-200/70 font-bold tracking-widest uppercase">
+                        Choose your mission
+                    </p>
+                    <Link to="/progress" className="mt-4 px-8 py-3 bg-gradient-to-r from-yellow-500 to-amber-600 text-white rounded-full font-black tracking-widest hover:scale-105 transition-transform shadow-[0_0_20px_rgba(245,158,11,0.4)] border border-white/20">
+                        🏆 MY PROGRESS
+                    </Link>
+                </div>
             </div>
 
             <motion.div
