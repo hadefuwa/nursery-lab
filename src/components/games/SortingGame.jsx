@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
 import { useTTS } from '../../hooks/useTTS';
-import { FaSquare, FaCircle, FaStar, FaRedo } from 'react-icons/fa';
+import { useProgress } from '../../context/ProgressContext';
+import { FaSquare, FaCircle, FaStar, FaRedo, FaLock, FaCheck } from 'react-icons/fa';
 
 // Draggable Item Component
 const DraggableItem = ({ id, type, color, shape }) => {
@@ -51,35 +52,61 @@ const Bucket = ({ id, label, accept, accentColor }) => {
     const bgColor = isRed ? 'bg-red-500/10' : 'bg-blue-500/10';
     const activeRing = isOver ? (isRed ? 'ring-4 ring-red-400 shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'ring-4 ring-blue-400 shadow-[0_0_40px_rgba(59,130,246,0.4)]') : '';
 
+    // Icon Logic for bucket hint
+    // We assume if 'shape' is in accept, we show it. If not, maybe just show a square as generic box?
+    // Actually simpler: pass the icon component or derive it.
+    let HintIcon = null;
+    if (accept.shape === 'circle') HintIcon = FaCircle;
+    else if (accept.shape === 'square') HintIcon = FaSquare;
+    // If no shape specified (Level 1), maybe no icon or generic.
+
     return (
         <div
             ref={setNodeRef}
             className={`
-            w-full h-48 md:h-64 rounded-3xl border-4 flex items-center justify-center transition-all duration-300 relative overflow-hidden group
+            w-full h-48 md:h-64 rounded-3xl border-4 flex flex-col items-center justify-center transition-all duration-300 relative overflow-hidden group gap-2
             ${borderColor} ${bgColor} ${activeRing}
             ${isOver ? 'scale-105' : ''}
         `}
         >
             <div className={`absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity bg-${accentColor}-500`}></div>
-            <span className={`text-3xl font-black pointer-events-none uppercase tracking-widest ${isRed ? 'text-red-500' : 'text-blue-500'}`}>{label}</span>
+            {HintIcon && <HintIcon className={`text-4xl md:text-5xl opacity-80 ${isRed ? 'text-red-500' : 'text-blue-500'}`} />}
+            <span className={`text-xl md:text-2xl font-black pointer-events-none uppercase tracking-widest ${isRed ? 'text-red-500' : 'text-blue-500'}`}>{label}</span>
         </div>
     );
 };
 
 const SortingGame = () => {
     const { speak } = useTTS();
-    const [level, setLevel] = useState(1); // 1: Color, 2: Shape + Color
+    const { getProgress, unlockLevel } = useProgress();
+
+    const progress = getProgress('sorting-game');
+    const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
     const [items, setItems] = useState([]);
-    const [score, setScore] = useState(0);
+
+    // Level Config
+    const getLevelConfig = (lvl) => {
+        // Level 1: Red vs Blue Squares
+        // Level 2: Red vs Blue Circles/Squares (4 buckets or 2 buckets sorted by shape only?)
+        // Let's stick to the buckets setup: 
+        // Level 2 was "Color AND Shape" with 4 buckets.
+
+        if (lvl === 1) return { mode: 'color', buckets: 2 };
+        if (lvl === 2) return { mode: 'color-shape', buckets: 4 };
+        // Future levels could be sorting by just shape (Circle vs Square vs Star) or 3 colors.
+        return { mode: 'color-shape', buckets: 4 };
+    };
 
     // Initialize Items
-    React.useEffect(() => {
-        generateItems(level);
-    }, [level]);
+    useEffect(() => {
+        generateItems(currentLevel);
+    }, [currentLevel]);
 
     const generateItems = (lvl) => {
         const newItems = [];
-        if (lvl === 1) {
+        const config = getLevelConfig(lvl);
+
+        if (config.mode === 'color') {
             // Sort by Color: Red vs Blue
             for (let i = 0; i < 10; i++) {
                 const color = Math.random() > 0.5 ? 'red' : 'blue';
@@ -90,7 +117,7 @@ const SortingGame = () => {
             const colors = ['red', 'blue'];
             const shapes = ['circle', 'square'];
 
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 12; i++) {
                 newItems.push({
                     id: `item-${i}`,
                     color: colors[Math.floor(Math.random() * 2)],
@@ -100,7 +127,6 @@ const SortingGame = () => {
             speak("Sort by Color AND Shape!");
         }
         setItems(newItems);
-        setScore(0);
     };
 
     const handleDragEnd = (event) => {
@@ -112,21 +138,24 @@ const SortingGame = () => {
 
             // Validation Logic
             let correct = false;
+            const config = getLevelConfig(currentLevel);
 
-            if (level === 1) {
-                // Check Color
+            if (config.mode === 'color') {
                 if (bucketData.accept.color === itemData.color) correct = true;
             } else {
-                // Check Color AND Shape
                 if (bucketData.accept.color === itemData.color && bucketData.accept.shape === itemData.shape) correct = true;
             }
 
             if (correct) {
-                setItems((items) => items.filter((i) => i.id !== active.id));
-                setScore(s => s + 1);
+                const newItems = items.filter((i) => i.id !== active.id);
+                setItems(newItems);
                 speak("Good!");
-                if (items.length <= 1) {
-                    setTimeout(() => speak("All sorted! You did it!"), 1000);
+
+                if (newItems.length === 0) {
+                    setTimeout(() => {
+                        speak("Level Complete!");
+                        unlockLevel('sorting-game', currentLevel + 1);
+                    }, 1000);
                 }
             } else {
                 speak("Oops, wrong box!");
@@ -134,27 +163,47 @@ const SortingGame = () => {
         }
     };
 
+    // Helper to next level
+    const nextLevel = () => {
+        setCurrentLevel(l => l + 1);
+    };
+
     return (
         <div className="flex flex-col items-center h-full gap-8 p-4">
 
             {/* Header */}
-            <div className="flex justify-between items-center w-full max-w-4xl bg-gray-900 border border-white/10 p-6 rounded-3xl shadow-lg">
+            <div className="w-full max-w-5xl flex flex-col md:flex-row gap-4 justify-between items-center bg-gray-900 border border-white/10 p-6 rounded-3xl shadow-lg">
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-400 uppercase tracking-widest mb-1">Sorting Mission</h2>
-                    <div className="text-sm text-cyan-500 font-bold">{level === 1 ? 'LEVEL 1: COLOR CODES' : 'LEVEL 2: SHAPE MATCH'}</div>
+                    <h2 className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-1">Sorting Mission</h2>
+                    <div className="text-2xl text-white font-black">LEVEL {currentLevel}</div>
                 </div>
 
-                {/* Level Switcher pills */}
-                <div className="flex bg-black/40 p-1.5 rounded-xl border border-white/5">
-                    <button onClick={() => setLevel(1)} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${level === 1 ? 'bg-cyan-600 text-white shadow-lg' : 'text-gray-500 hover:text-white'}`}>Colors</button>
-                    <button onClick={() => setLevel(2)} className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${level === 2 ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-500 hover:text-white'}`}>Shapes</button>
+                {/* Level Pips */}
+                <div className="flex gap-2 p-2 rounded-xl bg-black/20">
+                    {[1, 2].map(lvl => {
+                        const unlocked = lvl <= progress.maxLevel;
+                        const active = lvl === currentLevel;
+                        return (
+                            <button
+                                key={lvl}
+                                disabled={!unlocked}
+                                onClick={() => setCurrentLevel(lvl)}
+                                className={`w-10 h-10 rounded-lg font-bold flex items-center justify-center transition-all 
+                                    ${active ? 'bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]' :
+                                        unlocked ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-800 text-gray-600 cursor-not-allowed'}
+                                `}
+                            >
+                                {unlocked ? lvl : <FaLock size={12} />}
+                            </button>
+                        )
+                    })}
                 </div>
             </div>
 
             {/* Buckets */}
             <DndContext onDragEnd={handleDragEnd}>
-                <div className={`grid gap-6 w-full max-w-5xl ${level === 1 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
-                    {level === 1 ? (
+                <div className={`grid gap-6 w-full max-w-5xl ${getLevelConfig(currentLevel).buckets === 2 ? 'grid-cols-2' : 'grid-cols-2 md:grid-cols-4'}`}>
+                    {getLevelConfig(currentLevel).mode === 'color' ? (
                         <>
                             <Bucket id="bucket-red" label="Red Zone" accept={{ color: 'red' }} accentColor="red" />
                             <Bucket id="bucket-blue" label="Blue Zone" accept={{ color: 'blue' }} accentColor="blue" />
@@ -175,11 +224,18 @@ const SortingGame = () => {
 
                     <div className="flex flex-wrap justify-center gap-6 p-8 pb-12 w-full">
                         {items.length === 0 ? (
-                            <div className="flex flex-col items-center animate-bounce">
-                                <span className="text-6xl text-green-500 font-black drop-shadow-[0_0_20px_rgba(34,197,94,0.6)]">mission complete</span>
-                                <button onClick={() => generateItems(level)} className="mt-6 btn-neon flex items-center gap-3">
-                                    <FaRedo /> Restart System
-                                </button>
+                            <div className="flex flex-col items-center animate-bounce gap-4 bg-gray-900/90 p-8 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-md z-50">
+                                <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-500">
+                                    MISSION COMPLETE!
+                                </h2>
+                                <div className="flex gap-4">
+                                    <button onClick={() => generateItems(currentLevel)} className="mt-4 px-6 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 font-bold flex items-center gap-2">
+                                        <FaRedo /> Replay
+                                    </button>
+                                    <button onClick={nextLevel} className="mt-4 px-6 py-3 bg-cyan-500 text-white rounded-xl hover:bg-cyan-400 font-bold shadow-lg flex items-center gap-2 animate-pulse">
+                                        Next Level <FaCheck />
+                                    </button>
+                                </div>
                             </div>
                         ) : (
                             items.map((item) => (
