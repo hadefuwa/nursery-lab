@@ -136,7 +136,7 @@ const DrawingGame = () => {
             </div>
 
             {/* Canvas */}
-            <div className="flex-1 w-full max-w-6xl rounded-3xl overflow-hidden touch-none border-2 border-white/10 relative shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+            <div className="flex-1 w-full max-w-6xl min-h-[60vh] rounded-3xl overflow-hidden touch-none border-2 border-white/10 relative shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                 <canvas
                     ref={canvasRef}
                     className="w-full h-full cursor-crosshair active:cursor-none"
