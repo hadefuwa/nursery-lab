@@ -39,50 +39,80 @@ const TypingGame = () => {
         const top = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
         const home = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'];
         const bottom = ['Z', 'X', 'C', 'V', 'B', 'N', 'M'];
+        const all = [...top, ...home, ...bottom];
 
         if (lvl === 1) return top;
         if (lvl === 2) return home;
         if (lvl === 3) return bottom;
-        return [...top, ...home, ...bottom];
+        if (lvl === 4) return all;
+        if (lvl >= 5) return all; // Words use all keys
+        return all;
     };
 
-    useEffect(() => {
-        startRound();
-    }, [currentLevel]);
-
-    const startRound = () => {
-        setScore(0);
-        setTypedChars(0);
-        setStartTime(null);
-        setWpm(0);
-        setCompleted(false);
-        nextLetter();
+    // Words pools for higher levels
+    const WORDS = {
+        5: ['CAT', 'DOG', 'MOM', 'DAD', 'SUN', 'BUS', 'CAR', 'RED'],
+        6: ['LION', 'BLUE', 'JUMP', 'PLAY', 'MILK', 'BOOK', 'FISH', 'TREE'],
+        7: ['APPLE', 'HAPPY', 'WATER', 'HOUSE', 'SMILE', 'ZEBRA', 'TIGER', 'MOUSE']
     };
 
     const nextLetter = () => {
-        const availableKeys = getKeysForLevel(currentLevel);
-        const l = availableKeys[Math.floor(Math.random() * availableKeys.length)];
-        setTarget(l);
-        speak(`Type ${l}`);
+        if (currentLevel < 5) {
+            const availableKeys = getKeysForLevel(currentLevel);
+            const l = availableKeys[Math.floor(Math.random() * availableKeys.length)];
+            setTarget(l);
+            speak(`Type ${l}`);
+        } else {
+            // Word mode
+            const pool = WORDS[currentLevel] || WORDS[7];
+            const w = pool[Math.floor(Math.random() * pool.length)];
+            setTarget(w);
+            speak(`Type ${w}`);
+        }
+        setTypedIndex(0); // Reset word index
     };
+
+    // We need to track index for words
+    const [typedIndex, setTypedIndex] = useState(0);
 
     const handleKeyPress = (key) => {
         if (!startTime) setStartTime(Date.now());
 
-        if (key === target) {
-            setScore(s => s + 1);
-            setTypedChars(c => c + 1);
-            speak("Good!");
+        const isWordMode = currentLevel >= 5;
+        const currentTargetChar = isWordMode ? target[typedIndex] : target;
 
-            if (score + 1 >= TARGET_SCORE) {
-                setCompleted(true);
-                // Win logic
-                unlockLevel('typing-game', currentLevel + 1);
-                speak("Level Complete!");
+        if (key === currentTargetChar) {
+            setTypedChars(c => c + 1);
+
+            if (isWordMode) {
+                if (typedIndex + 1 === target.length) {
+                    // Word Complete
+                    setScore(s => s + 1);
+                    speak("Good!");
+
+                    if (score + 1 >= 5) { // Reduced target for words
+                        setCompleted(true);
+                        unlockLevel('typing-game', currentLevel + 1);
+                        speak("Level Complete!");
+                    } else {
+                        setTimeout(nextLetter, 200);
+                    }
+                } else {
+                    // Letter Correct, advance index
+                    setTypedIndex(i => i + 1);
+                }
             } else {
-                nextLetter(); // Need to call this IF not winning
-                // Actually need to ensure 'score' update is reflected or check against s+1
-                // logic fixed above.
+                // Single Letter Mode
+                setScore(s => s + 1);
+                speak("Good!");
+
+                if (score + 1 >= TARGET_SCORE) {
+                    setCompleted(true);
+                    unlockLevel('typing-game', currentLevel + 1);
+                    speak("Level Complete!");
+                } else {
+                    nextLetter();
+                }
             }
         } else {
             setShake(true);
@@ -126,8 +156,8 @@ const TypingGame = () => {
                     <div className="text-2xl text-white font-black">LEVEL {currentLevel}</div>
                 </div>
 
-                <div className="flex gap-2 p-2 rounded-xl bg-black/20 overflow-x-auto max-w-[200px] no-scrollbar">
-                    {[1, 2, 3, 4].map(lvl => (
+                <div className="flex gap-2 p-2 rounded-xl bg-black/20 overflow-x-auto max-w-[300px] no-scrollbar">
+                    {[1, 2, 3, 4, 5, 6].map(lvl => (
                         <button
                             key={lvl}
                             disabled={lvl > progress.maxLevel}

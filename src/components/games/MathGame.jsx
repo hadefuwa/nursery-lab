@@ -30,14 +30,28 @@ const MathGame = () => {
         if (lvl === 2) return { op: '-', max: 5 };
         if (lvl === 3) return { op: '+', max: 10 };
         if (lvl === 4) return { op: '-', max: 10 };
-        return { op: lvl % 2 !== 0 ? '+' : '-', max: Math.min(20, 5 * Math.ceil(lvl / 2)) };
+        if (lvl === 5) return { op: '+', max: 20 };
+
+        // Levels 6-10: Higher difficulty
+        if (lvl === 6) return { op: '-', max: 20 };
+        if (lvl === 7) return { op: 'mixed', max: 20 }; // Random + or -
+        if (lvl === 8) return { op: '+', max: 50 };
+        if (lvl === 9) return { op: '-', max: 50 };
+        if (lvl >= 10) return { op: 'mixed', max: 100 };
+
+        return { op: 'mixed', max: 20 };
     };
 
     const generateProblem = (lvl) => {
         const config = getLevelConfig(lvl);
         let a, b, ans;
 
-        if (config.op === '+') {
+        let operation = config.op;
+        if (operation === 'mixed') {
+            operation = Math.random() > 0.5 ? '+' : '-';
+        }
+
+        if (operation === '+') {
             a = Math.floor(Math.random() * (config.max - 1)) + 1;
             b = Math.floor(Math.random() * (config.max - a)) + 1;
             // ensure sum <= max? Or operands? Usually sum within max for progressive difficulty.
@@ -50,7 +64,7 @@ const MathGame = () => {
             ans = a - b;
         }
 
-        setProblem({ a, b, ans, op: config.op });
+        setProblem({ a, b, ans, op: operation });
 
         const opts = new Set([ans]);
         while (opts.size < 3) {
@@ -62,7 +76,7 @@ const MathGame = () => {
 
         // Speak intro
         setTimeout(() => {
-            const opWord = config.op === '+' ? 'plus' : 'minus';
+            const opWord = operation === '+' ? 'plus' : 'minus';
             speak(`${a} ${opWord} ${b} equals what?`);
         }, 500);
     };
@@ -121,8 +135,8 @@ const MathGame = () => {
                 </div>
 
                 {/* Level Pips */}
-                <div className="flex gap-2 p-2 overflow-x-auto max-w-[200px] md:max-w-md no-scrollbar">
-                    {[1, 2, 3, 4, 5].map(lvl => {
+                <div className="flex gap-2 p-2 overflow-x-auto max-w-[300px] md:max-w-lg no-scrollbar">
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map(lvl => {
                         const unlocked = lvl <= progress.maxLevel;
                         const active = lvl === currentLevel;
                         return (
