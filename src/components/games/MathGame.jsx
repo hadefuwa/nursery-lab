@@ -5,7 +5,7 @@ import { FaAppleAlt, FaStar, FaCalculator, FaMinus, FaPlus, FaLock, FaArrowRight
 
 const MathGame = () => {
     const { speak } = useTTS();
-    const { getProgress, unlockLevel } = useProgress();
+    const { getProgress, unlockLevel, saveLevel } = useProgress();
 
     // Level Management
     // Level 1: Add within 5
@@ -15,6 +15,10 @@ const MathGame = () => {
     // Level 5: Add within 20
     const progress = getProgress('math-game');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
+
+    useEffect(() => {
+        saveLevel('math-game', currentLevel);
+    }, [currentLevel]);
 
     const [problem, setProblem] = useState({ a: 1, b: 1, ans: 2, op: '+' });
     const [options, setOptions] = useState([]);

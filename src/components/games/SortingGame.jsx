@@ -78,11 +78,15 @@ const Bucket = ({ id, label, accept, accentColor }) => {
 
 const SortingGame = () => {
     const { speak } = useTTS();
-    const { getProgress, unlockLevel } = useProgress();
+    const { getProgress, unlockLevel, saveLevel } = useProgress();
 
     const progress = getProgress('sorting-game');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
     const [items, setItems] = useState([]);
+
+    useEffect(() => {
+        saveLevel('sorting-game', currentLevel);
+    }, [currentLevel]);
 
     // Level Config
     const getLevelConfig = (lvl) => {

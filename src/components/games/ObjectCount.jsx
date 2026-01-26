@@ -12,7 +12,7 @@ const ITEMS = [
 
 const ObjectCount = () => {
     const { speak } = useTTS();
-    const { getProgress, unlockLevel } = useProgress();
+    const { getProgress, unlockLevel, saveLevel } = useProgress();
 
     const [count, setCount] = useState(0);
     const [items, setItems] = useState([]);
@@ -22,6 +22,10 @@ const ObjectCount = () => {
     // Level Management
     const progress = getProgress('object-count');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
+
+    useEffect(() => {
+        saveLevel('object-count', currentLevel);
+    }, [currentLevel]);
 
     // Level Configuration
     const getLevelConfig = (lvl) => {

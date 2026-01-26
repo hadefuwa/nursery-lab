@@ -11,7 +11,7 @@ const KEYS = [
 
 const TypingGame = () => {
     const { speak } = useTTS();
-    const { getProgress, unlockLevel } = useProgress();
+    const { getProgress, unlockLevel, saveLevel } = useProgress();
 
     // Progression:
     // Lvl 1: Top Row (QWERTY...)
@@ -20,6 +20,10 @@ const TypingGame = () => {
     // Lvl 4: All Letters
     const progress = getProgress('typing-game');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
+
+    useEffect(() => {
+        saveLevel('typing-game', currentLevel);
+    }, [currentLevel]);
 
     const [target, setTarget] = useState('');
     const [score, setScore] = useState(0);

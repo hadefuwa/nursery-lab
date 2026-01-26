@@ -5,10 +5,14 @@ import { FaHeart, FaMousePointer, FaLock, FaTrophy, FaRedo, FaArrowRight } from 
 
 const ClickingGame = () => {
     const { speak } = useTTS();
-    const { getProgress, unlockLevel } = useProgress();
+    const { getProgress, unlockLevel, saveLevel } = useProgress();
 
     const progress = getProgress('clicking-game');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
+
+    useEffect(() => {
+        saveLevel('clicking-game', currentLevel);
+    }, [currentLevel]);
 
     // Level Config
     const getLevelConfig = (lvl) => {

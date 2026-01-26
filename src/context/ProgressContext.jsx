@@ -28,12 +28,24 @@ export const ProgressProvider = ({ children }) => {
         });
     };
 
+    const saveLevel = (gameId, level) => {
+        setProgress(prev => {
+            const current = prev[gameId] || { level: 1, maxLevel: 1 };
+            // Ensure we don't save a level higher than maxLevel just in case, though UI should prevent it
+            // Actually, we just want to save 'where the user is'.
+            return {
+                ...prev,
+                [gameId]: { ...current, level }
+            };
+        });
+    };
+
     const getProgress = (gameId) => {
         return progress[gameId] || { level: 1, maxLevel: 1 };
     };
 
     return (
-        <ProgressContext.Provider value={{ progress, unlockLevel, getProgress }}>
+        <ProgressContext.Provider value={{ progress, unlockLevel, saveLevel, getProgress }}>
             {children}
         </ProgressContext.Provider>
     );

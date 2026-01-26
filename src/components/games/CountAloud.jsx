@@ -5,13 +5,17 @@ import { FaPlay, FaPause, FaStop, FaRedo, FaLock, FaCheck } from 'react-icons/fa
 
 const CountAloud = () => {
     const { speak, cancel } = useTTS();
-    const { getProgress, unlockLevel } = useProgress();
+    const { getProgress, unlockLevel, saveLevel } = useProgress();
 
     // Progression:
     // Lvl 1: Count to 10
     // Lvl 2: Count to 20
     const progress = getProgress('count-aloud');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
+
+    useEffect(() => {
+        saveLevel('count-aloud', currentLevel);
+    }, [currentLevel]);
 
     const [currentNumber, setCurrentNumber] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);

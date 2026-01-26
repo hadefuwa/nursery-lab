@@ -5,7 +5,7 @@ import { FaFont, FaSortNumericDown, FaStar, FaLock, FaRedo, FaCheck } from 'reac
 
 const SymbolRecognition = () => {
     const { speak } = useTTS();
-    const { getProgress, unlockLevel } = useProgress();
+    const { getProgress, unlockLevel, saveLevel } = useProgress();
 
     // Progression:
     // Lvl 1: Numbers 0-10
@@ -15,6 +15,10 @@ const SymbolRecognition = () => {
     // Lvl 5: Mixed Numbers & Letters
     const progress = getProgress('symbol-recog');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
+
+    useEffect(() => {
+        saveLevel('symbol-recog', currentLevel);
+    }, [currentLevel]);
 
     const [target, setTarget] = useState('');
     const [options, setOptions] = useState([]);
