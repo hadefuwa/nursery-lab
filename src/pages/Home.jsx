@@ -12,6 +12,7 @@ const Home = () => {
         { to: '/lesson/clicking', label: 'Clicking', emoji: '🎈', color: 'from-red-400 to-red-600', shadow: 'shadow-red-500/40' },
         { to: '/lesson/sorting', label: 'Sorting', emoji: '🟦', color: 'from-cyan-400 to-cyan-600', shadow: 'shadow-cyan-500/40' },
         { to: '/lesson/drawing', label: 'Drawing', emoji: '🎨', color: 'from-fuchsia-400 to-pink-600', shadow: 'shadow-pink-500/40' },
+        { to: '/lesson/alphabet', label: 'Alphabet', emoji: '🦁', color: 'from-yellow-400 to-orange-600', shadow: 'shadow-orange-500/40' },
     ];
 
     const container = {

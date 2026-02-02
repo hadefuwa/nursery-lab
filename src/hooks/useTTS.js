@@ -18,7 +18,7 @@ export const useTTS = () => {
     };
   }, []);
 
-  const speak = useCallback((text) => {
+  const speak = useCallback((text, onEnd) => {
     if (!text) return;
     
     // Cancel any current speech
@@ -36,8 +36,14 @@ export const useTTS = () => {
     utterance.pitch = 1.1; // Slightly higher pitch
     
     utterance.onstart = () => setSpeaking(true);
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
+    utterance.onend = () => {
+        setSpeaking(false);
+        if (onEnd) onEnd();
+    };
+    utterance.onerror = () => {
+        setSpeaking(false);
+        if (onEnd) onEnd();
+    };
 
     window.speechSynthesis.speak(utterance);
   }, [voices]);
