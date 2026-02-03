@@ -7,7 +7,7 @@ const Home = () => {
         { to: '/lesson/count-aloud', label: 'Count Aloud', emoji: '🗣️', color: 'from-pink-500 to-rose-600', shadow: 'shadow-rose-500/40' },
         { to: '/lesson/count-objects', label: 'Count Objects', emoji: '🍎', color: 'from-green-400 to-emerald-600', shadow: 'shadow-emerald-500/40' },
         { to: '/lesson/math', label: 'Add & Sub', emoji: '➕', color: 'from-orange-400 to-amber-600', shadow: 'shadow-amber-500/40' },
-        { to: '/lesson/symbols', label: 'ABC & 123', emoji: '🅰️', color: 'from-blue-400 to-indigo-600', shadow: 'shadow-indigo-500/40' },
+        { to: '/lesson/symbols', label: 'Number Hunt', emoji: '🔢', color: 'from-blue-400 to-indigo-600', shadow: 'shadow-indigo-500/40' },
         { to: '/lesson/typing', label: 'Typing Fun', emoji: '⌨️', color: 'from-purple-400 to-violet-600', shadow: 'shadow-violet-500/40' },
         { to: '/lesson/clicking', label: 'Clicking', emoji: '🎈', color: 'from-red-400 to-red-600', shadow: 'shadow-red-500/40' },
         { to: '/lesson/sorting', label: 'Sorting', emoji: '🟦', color: 'from-cyan-400 to-cyan-600', shadow: 'shadow-cyan-500/40' },

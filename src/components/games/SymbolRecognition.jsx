@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTTS } from '../../hooks/useTTS';
 import { useProgress } from '../../context/ProgressContext';
-import { FaFont, FaSortNumericDown, FaStar, FaLock, FaRedo, FaCheck } from 'react-icons/fa';
+import { FaFont, FaSortNumericDown, FaStar, FaLock, FaRedo, FaCheck, FaVolumeUp } from 'react-icons/fa';
 
 const SymbolRecognition = () => {
     const { speak } = useTTS();
@@ -9,10 +9,10 @@ const SymbolRecognition = () => {
 
     // Progression:
     // Lvl 1: Numbers 0-10
-    // Lvl 2: Letters A-M
-    // Lvl 3: Numbers 11-20
-    // Lvl 4: Letters N-Z
-    // Lvl 5: Mixed Numbers & Letters
+    // Lvl 2: Numbers 11-20
+    // Lvl 3: Numbers 21-50
+    // Lvl 4: Numbers 51-100
+    // Lvl 5: Challenge 0-100
     const progress = getProgress('symbol-recog');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
 
@@ -29,16 +29,13 @@ const SymbolRecognition = () => {
     const TARGET_SCORE = 5; // Wins per level
 
     const getLevelPool = (lvl) => {
-        const nums0_10 = Array.from({ length: 11 }, (_, i) => i.toString());
-        const nums11_20 = Array.from({ length: 10 }, (_, i) => (i + 11).toString());
-        const lettersA_M = Array.from({ length: 13 }, (_, i) => String.fromCharCode(65 + i));
-        const lettersN_Z = Array.from({ length: 13 }, (_, i) => String.fromCharCode(78 + i));
+        const createRange = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => (start + i).toString());
 
-        if (lvl === 1) return nums0_10;
-        if (lvl === 2) return lettersA_M;
-        if (lvl === 3) return nums11_20;
-        if (lvl === 4) return lettersN_Z;
-        return [...nums0_10, ...nums11_20, ...lettersA_M, ...lettersN_Z];
+        if (lvl === 1) return createRange(0, 10);
+        if (lvl === 2) return createRange(11, 20);
+        if (lvl === 3) return createRange(21, 50);
+        if (lvl === 4) return createRange(51, 100);
+        return createRange(0, 100);
     };
 
     const generateProblem = (lvl) => {
@@ -55,8 +52,7 @@ const SymbolRecognition = () => {
         setFeedback(null);
 
         setTimeout(() => {
-            const isNum = !isNaN(t);
-            speak(`Find the ${isNum ? 'number' : 'letter'} ${t}`);
+            speak(`Find the number ${t}`);
         }, 300);
     };
 
@@ -97,7 +93,7 @@ const SymbolRecognition = () => {
             {/* Header */}
             <div className="w-full max-w-4xl flex justify-between items-center bg-gray-900 border border-white/10 p-6 rounded-3xl shadow-lg">
                 <div>
-                    <h2 className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-1">Symbol Scan</h2>
+                    <h2 className="text-gray-400 font-bold uppercase tracking-widest text-sm mb-1">Number Hunt</h2>
                     <div className="text-2xl text-white font-black">LEVEL {currentLevel}</div>
                 </div>
 
@@ -123,9 +119,15 @@ const SymbolRecognition = () => {
             {/* Question Area */}
             <div className="flex-1 w-full max-w-5xl flex flex-col items-center justify-center p-8 card-neon relative min-h-[400px]">
 
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-16 text-center tracking-wide drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
-                    Find: <span className="text-cyan-400 text-6xl ml-4 inline-block drop-shadow-[0_0_20px_rgba(34,211,238,0.8)] animate-pulse">{target}</span>
-                </h2>
+                <div className="flex flex-col items-center mb-12 gap-6">
+                    <button
+                        onClick={() => speak(`Find the number ${target}`)}
+                        className="flex items-center gap-4 px-10 py-6 bg-purple-600 hover:bg-purple-500 rounded-full text-white text-2xl font-black shadow-[0_0_30px_rgba(147,51,234,0.5)] transition-transform active:scale-95 animate-pulse"
+                    >
+                        <FaVolumeUp size={32} /> LISTEN
+                    </button>
+                    <p className="text-white/50 text-sm font-bold uppercase tracking-widest">Tap to hear</p>
+                </div>
 
                 {/* Options */}
                 <div className="grid grid-cols-3 gap-8 w-full max-w-4xl z-10">

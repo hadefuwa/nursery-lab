@@ -199,12 +199,13 @@ const AlphabetGame = () => {
 
     const renderQuiz = () => (
         <div className="flex flex-col h-full w-full max-w-6xl mx-auto p-4">
-            <div className="flex justify-between items-center mb-8">
-                <h2 className="text-3xl font-black text-white flex items-center gap-4">
-                    Find <span className="bg-white text-indigo-600 px-4 py-1 rounded-xl">{quizTarget}</span>
-                </h2>
-                <button onClick={() => speak(`Find the letter ${quizTarget}`)} className="p-4 bg-white/10 rounded-full hover:bg-white/20 text-white transition-colors">
-                    <FaVolumeUp size={24} />
+            <div className="flex flex-col items-center mb-8 gap-4">
+                <h2 className="text-3xl font-black text-white">Listen & Find</h2>
+                <button
+                    onClick={() => speak(`Find the letter ${quizTarget}`)}
+                    className="flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white font-bold text-xl shadow-lg transition-transform active:scale-95"
+                >
+                    <FaVolumeUp /> Play Sound
                 </button>
             </div>
 
