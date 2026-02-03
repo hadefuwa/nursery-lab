@@ -13,6 +13,8 @@ const Home = () => {
         { to: '/lesson/sorting', label: 'Sorting', emoji: '🟦', color: 'from-cyan-400 to-cyan-600', shadow: 'shadow-cyan-500/40' },
         { to: '/lesson/drawing', label: 'Drawing', emoji: '🎨', color: 'from-fuchsia-400 to-pink-600', shadow: 'shadow-pink-500/40' },
         { to: '/lesson/alphabet', label: 'Alphabet', emoji: '🦁', color: 'from-yellow-400 to-orange-600', shadow: 'shadow-orange-500/40' },
+        { to: '/lesson/alphabet-hard', label: 'Alphabet II', emoji: '😼', color: 'from-orange-500 to-red-600', shadow: 'shadow-red-500/40' },
+        { to: '/lesson/number-hard', label: 'Number Pro', emoji: '⚡', color: 'from-blue-600 to-indigo-800', shadow: 'shadow-indigo-500/40' },
     ];
 
     const container = {

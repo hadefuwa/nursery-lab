@@ -14,6 +14,8 @@ import ClickingGame from './components/games/ClickingGame';
 import SortingGame from './components/games/SortingGame';
 import DrawingGame from './components/games/DrawingGame';
 import AlphabetGame from './components/games/AlphabetGame';
+import AlphabetHard from './components/games/AlphabetHard';
+import NumberHard from './components/games/NumberHard';
 
 // Page Transition Wrapper
 const PageTransition = ({ children }) => (
@@ -47,6 +49,8 @@ const AnimatedRoutes = () => {
         <Route path="/lesson/sorting" element={<PageTransition><SortingGame /></PageTransition>} />
         <Route path="/lesson/drawing" element={<PageTransition><DrawingGame /></PageTransition>} />
         <Route path="/lesson/alphabet" element={<PageTransition><AlphabetGame /></PageTransition>} />
+        <Route path="/lesson/alphabet-hard" element={<PageTransition><AlphabetHard /></PageTransition>} />
+        <Route path="/lesson/number-hard" element={<PageTransition><NumberHard /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );

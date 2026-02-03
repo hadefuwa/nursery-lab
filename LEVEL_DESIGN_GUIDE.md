@@ -80,7 +80,8 @@ To add levels to a game, you don't need to create new files. Instead, you define
 | **Math Lab** | `math-game` | 1-4: Fixed rules (+/- 5, 10). 5+: Algo. | Introduce *, /, missing operands (3 + ? = 5). |
 | **Sorting** | `sorting-game` | **Pending Update**: Lvl 1 Color, Lvl 2 Shape. | Lvl 3: Mix, Lvl 4: 3 colors, Lvl 5: Size sorting. |
 | **Typing** | `typing-game` | **Pending Update**: Random. | Lvl 1: Home row, Lvl 2: Upper row, Lvl 3: Words. |
-| **Symbols** | `symbol-recog` | **Pending Update**: Manual Toggle. | Lvl 1: 1-10, Lvl 2: A-M, Lvl 3: N-Z, Lvl 4: Mixed. |
+| **Alphabet** | `alphabet-game` | **New**: Audio-only listening game. | Groups of 5 (A-E, F-J...) up to Z. |
+| **Number Hunt** | `symbol-recog` | **Updated**: Audio-only listening game. | Lvl 1: 0-10, Lvl 2: 11-20, Lvl 3: 21-50, Lvl 4: 51-100. |
 | **Clicking** | `clicking-game` | **Pending Update**: 1000pts win. | Lvl 1: Slow/Big, Lvl 2: Fast/Small, Lvl 3: Obstacles. |
 
 ## 4. Scaling to 100 Levels
