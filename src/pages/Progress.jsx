@@ -8,10 +8,12 @@ const GAMES = [
     { id: 'count-aloud', label: 'Count Aloud', emoji: '🗣️', color: 'text-pink-500' },
     { id: 'object-count', label: 'Count Objects', emoji: '🍎', color: 'text-green-500' },
     { id: 'math-game', label: 'Add & Sub', emoji: '➕', color: 'text-orange-500' },
-    { id: 'symbol-recog', label: 'ABC & 123', emoji: '🅰️', color: 'text-blue-500' },
+    { id: 'symbol-recog', label: 'Number Hunt', emoji: '🔢', color: 'text-blue-500' },
+    { id: 'alphabet-game', label: 'Alphabet', emoji: '🦁', color: 'text-yellow-500' },
     { id: 'typing-game', label: 'Typing Fun', emoji: '⌨️', color: 'text-purple-500' },
     { id: 'clicking-game', label: 'Clicking', emoji: '🎈', color: 'text-red-500' },
     { id: 'sorting-game', label: 'Sorting', emoji: '🟦', color: 'text-cyan-500' },
+    { id: 'drawing-game', label: 'Drawing', emoji: '🎨', color: 'text-fuchsia-500' },
 ];
 
 const Progress = () => {
