@@ -15,6 +15,8 @@ const Home = () => {
         { to: '/lesson/alphabet', label: 'Alphabet', emoji: '🦁', color: 'from-yellow-400 to-orange-600', shadow: 'shadow-orange-500/40' },
         { to: '/lesson/alphabet-hard', label: 'Alphabet II', emoji: '😼', color: 'from-orange-500 to-red-600', shadow: 'shadow-red-500/40' },
         { to: '/lesson/number-hard', label: 'Number Pro', emoji: '⚡', color: 'from-blue-600 to-indigo-800', shadow: 'shadow-indigo-500/40' },
+        { to: '/lesson/bubble-pop', label: 'Bubble Pop', emoji: '🫧', color: 'from-cyan-500 to-blue-500', shadow: 'shadow-blue-400/40' },
+        { to: '/lesson/letter-match', label: 'Letter Match', emoji: '🧩', color: 'from-violet-500 to-purple-600', shadow: 'shadow-purple-500/40' },
     ];
 
     const container = {

@@ -12,6 +12,8 @@ const GAMES = [
     { id: 'alphabet-game', label: 'Alphabet', emoji: '🦁', color: 'text-yellow-500' },
     { id: 'alphabet-hard', label: 'Alphabet II', emoji: '😼', color: 'text-red-500' },
     { id: 'number-hard', label: 'Number Pro', emoji: '⚡', color: 'text-indigo-500' },
+    { id: 'bubble-pop', label: 'Bubble Pop', emoji: '🫧', color: 'text-blue-500' },
+    { id: 'letter-match', label: 'Letter Match', emoji: '🧩', color: 'text-purple-500' },
     { id: 'typing-game', label: 'Typing Fun', emoji: '⌨️', color: 'text-purple-500' },
     { id: 'clicking-game', label: 'Clicking', emoji: '🎈', color: 'text-red-500' },
     { id: 'sorting-game', label: 'Sorting', emoji: '🟦', color: 'text-cyan-500' },
