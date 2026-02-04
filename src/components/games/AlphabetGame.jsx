@@ -33,6 +33,10 @@ const AlphabetGame = () => {
     const [remainingTargets, setRemainingTargets] = useState([]);
     const [quizOptions, setQuizOptions] = useState([]); // Shuffled options
     const [feedback, setFeedback] = useState(null); // 'correct' | 'incorrect'
+    const [questionPrompt, setQuestionPrompt] = useState('');
+    const [questionSpeech, setQuestionSpeech] = useState('');
+    const [questionClue, setQuestionClue] = useState('');
+    const [questionMode, setQuestionMode] = useState('find');
 
     // Helpers
     const currentGroup = ALPHABET_GROUPS[currentGroupIndex] || ALPHABET_GROUPS[0];
@@ -57,6 +61,61 @@ const AlphabetGame = () => {
             origin: { y: 0.6 },
             colors: ['#FFD700', '#FFA500', '#FF4500']
         });
+    };
+
+    const shuffle = (arr) => [...arr].sort(() => Math.random() - 0.5);
+
+    const buildQuestionForTarget = (target) => {
+        const idx = currentGroup.indexOf(target);
+        const availableModes = ['find'];
+
+        if (idx > 0) availableModes.push('after');
+        if (idx < currentGroup.length - 1) availableModes.push('before');
+        if (idx > 0 && idx < currentGroup.length - 1) availableModes.push('missing');
+
+        const mode = availableModes[Math.floor(Math.random() * availableModes.length)];
+
+        if (mode === 'before') {
+            const nextLetter = currentGroup[idx + 1];
+            return {
+                mode,
+                prompt: `What comes before ${nextLetter}?`,
+                speech: `What comes before ${nextLetter}?`,
+                clue: `${target} is before ${nextLetter}`,
+                options: shuffle(currentGroup)
+            };
+        }
+
+        if (mode === 'after') {
+            const prevLetter = currentGroup[idx - 1];
+            return {
+                mode,
+                prompt: `What comes after ${prevLetter}?`,
+                speech: `What comes after ${prevLetter}?`,
+                clue: `${target} is after ${prevLetter}`,
+                options: shuffle(currentGroup)
+            };
+        }
+
+        if (mode === 'missing') {
+            const prevLetter = currentGroup[idx - 1];
+            const nextLetter = currentGroup[idx + 1];
+            return {
+                mode,
+                prompt: 'Fill the missing letter',
+                speech: `Fill the missing letter between ${prevLetter} and ${nextLetter}.`,
+                clue: `${prevLetter} _ ${nextLetter}`,
+                options: shuffle(currentGroup)
+            };
+        }
+
+        return {
+            mode: 'find',
+            prompt: `Find the letter ${target}`,
+            speech: `Find the letter ${target}.`,
+            clue: '',
+            options: shuffle(currentGroup)
+        };
     };
 
     // --- Actions ---
@@ -90,9 +149,6 @@ const AlphabetGame = () => {
 
     const startQuiz = () => {
         setMode('QUIZ');
-        // Shuffle options
-        const shuffled = [...currentGroup].sort(() => Math.random() - 0.5);
-        setQuizOptions(shuffled);
 
         // Setup targets (we ask for all of them in random order? Or sequential? Random is better)
         const targets = [...currentGroup].sort(() => Math.random() - 0.5);
@@ -115,9 +171,15 @@ const AlphabetGame = () => {
         }
 
         const target = targets[0];
+        const question = buildQuestionForTarget(target);
         setQuizTarget(target);
+        setQuestionMode(question.mode);
+        setQuestionPrompt(question.prompt);
+        setQuestionSpeech(question.speech);
+        setQuestionClue(question.clue);
+        setQuizOptions(question.options);
         setFeedback(null);
-        speak(`Find the letter ${target}.`);
+        speak(question.speech);
     };
 
     const handleCardClick = (letter) => {
@@ -200,13 +262,21 @@ const AlphabetGame = () => {
     const renderQuiz = () => (
         <div className="flex flex-col h-full w-full max-w-6xl mx-auto p-4">
             <div className="flex flex-col items-center mb-8 gap-4">
-                <h2 className="text-3xl font-black text-white">Listen & Find</h2>
+                <h2 className="text-3xl font-black text-white">{questionPrompt || 'Listen & Find'}</h2>
+                {questionClue ? (
+                    <div className="px-6 py-3 rounded-2xl bg-white/10 text-white font-black text-2xl tracking-widest">
+                        {questionClue}
+                    </div>
+                ) : null}
                 <button
-                    onClick={() => speak(`Find the letter ${quizTarget}`)}
+                    onClick={() => speak(questionSpeech || `Find the letter ${quizTarget}`)}
                     className="flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-full text-white font-bold text-xl shadow-lg transition-transform active:scale-95"
                 >
                     <FaVolumeUp /> Play Sound
                 </button>
+                <div className="text-sm uppercase tracking-widest text-indigo-200/80 font-bold">
+                    {questionMode === 'find' ? 'Find It' : questionMode === 'before' ? 'Before' : questionMode === 'after' ? 'After' : 'Missing'}
+                </div>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 flex-1 place-content-center">
