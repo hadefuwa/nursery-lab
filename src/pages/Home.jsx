@@ -20,6 +20,8 @@ const Home = () => {
         { to: '/lesson/number-hard', label: 'Number Pro', emoji: '⚡', color: 'from-blue-600 to-indigo-800', shadow: 'shadow-indigo-500/40', gameId: 'number-hard', totalLevels: 5 },
         { to: '/lesson/bubble-pop', label: 'Bubble Pop', emoji: '🫧', color: 'from-cyan-500 to-blue-500', shadow: 'shadow-blue-400/40', gameId: 'bubble-pop' },
         { to: '/lesson/letter-match', label: 'Letter Match', emoji: '🧩', color: 'from-violet-500 to-purple-600', shadow: 'shadow-purple-500/40', gameId: 'letter-match', totalLevels: 4 },
+        { to: '/lesson/word-start', label: 'Word Start', emoji: '📖', color: 'from-emerald-500 to-teal-600', shadow: 'shadow-teal-500/40', gameId: 'word-start', totalLevels: 6 },
+        { to: '/lesson/letter-order', label: 'Letter Order', emoji: '🔤', color: 'from-sky-500 to-blue-600', shadow: 'shadow-blue-500/40', gameId: 'letter-order', totalLevels: 6 },
     ];
 
     const container = {

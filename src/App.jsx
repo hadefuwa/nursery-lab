@@ -18,6 +18,8 @@ import AlphabetHard from './components/games/AlphabetHard';
 import NumberHard from './components/games/NumberHard';
 import BubblePop from './components/games/BubblePop';
 import LetterMatch from './components/games/LetterMatch';
+import WordStart from './components/games/WordStart';
+import LetterOrder from './components/games/LetterOrder';
 
 // Page Transition Wrapper
 const PageTransition = ({ children }) => (
@@ -55,6 +57,8 @@ const AnimatedRoutes = () => {
         <Route path="/lesson/number-hard" element={<PageTransition><NumberHard /></PageTransition>} />
         <Route path="/lesson/bubble-pop" element={<PageTransition><BubblePop /></PageTransition>} />
         <Route path="/lesson/letter-match" element={<PageTransition><LetterMatch /></PageTransition>} />
+        <Route path="/lesson/word-start" element={<PageTransition><WordStart /></PageTransition>} />
+        <Route path="/lesson/letter-order" element={<PageTransition><LetterOrder /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
