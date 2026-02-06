@@ -91,18 +91,24 @@ const SortingGame = () => {
     // Level Config
     const getLevelConfig = (lvl) => {
         // Level 1: Red vs Blue (Color) - Squares only (simple)
-        if (lvl === 1) return { mode: 'color', buckets: 2, shapes: ['square'], colors: ['red', 'blue'] };
+        if (lvl === 1) return { mode: 'color', buckets: 2, shapes: ['square'], colors: ['red', 'blue'], count: 12 };
 
         // Level 2: Red vs Blue (Color + Shape) - Circle vs Square
-        if (lvl === 2) return { mode: 'color-shape', buckets: 4, shapes: ['circle', 'square'], colors: ['red', 'blue'] };
+        if (lvl === 2) return { mode: 'color-shape', buckets: 4, shapes: ['circle', 'square'], colors: ['red', 'blue'], count: 12 };
 
         // Level 3: Just Shapes (Red Color Fixed) - Circle, Square, Star
-        if (lvl === 3) return { mode: 'shape', buckets: 3, shapes: ['circle', 'square', 'star'], colors: ['red'] };
+        if (lvl === 3) return { mode: 'shape', buckets: 3, shapes: ['circle', 'square', 'star'], colors: ['red'], count: 14 };
 
         // Level 4: Complex (Blue) - Circle, Square, Star
-        if (lvl >= 4) return { mode: 'shape', buckets: 3, shapes: ['circle', 'square', 'star'], colors: ['blue'] };
+        if (lvl === 4) return { mode: 'shape', buckets: 3, shapes: ['circle', 'square', 'star'], colors: ['blue'], count: 16 };
 
-        return { mode: 'color', buckets: 2, shapes: ['square'], colors: ['red', 'blue'] };
+        // Level 5: Color challenge (more items + mixed shapes)
+        if (lvl === 5) return { mode: 'color', buckets: 2, shapes: ['square', 'circle', 'star'], colors: ['red', 'blue'], count: 18 };
+
+        // Level 6+: Fast sorting (more items)
+        if (lvl >= 6) return { mode: 'color-shape', buckets: 4, shapes: ['circle', 'square'], colors: ['red', 'blue'], count: 20 };
+
+        return { mode: 'color', buckets: 2, shapes: ['square'], colors: ['red', 'blue'], count: 12 };
     };
 
     // Initialize Items
@@ -115,7 +121,8 @@ const SortingGame = () => {
         const config = getLevelConfig(lvl);
         const { colors, shapes } = config;
 
-        for (let i = 0; i < 12; i++) {
+        const total = config.count || 12;
+        for (let i = 0; i < total; i++) {
             // For level 1 we just want random colors from the allowed list
             const color = colors[Math.floor(Math.random() * colors.length)];
             const shape = shapes[Math.floor(Math.random() * shapes.length)];
@@ -181,7 +188,7 @@ const SortingGame = () => {
 
                 {/* Level Pips */}
                 <div className="flex gap-2 p-2 rounded-xl bg-black/20">
-                    {[1, 2, 3, 4].map(lvl => {
+                    {[1, 2, 3, 4, 5, 6].map(lvl => {
                         const unlocked = lvl <= progress.maxLevel;
                         const active = lvl === currentLevel;
                         return (

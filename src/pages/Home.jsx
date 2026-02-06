@@ -2,27 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useProgress } from '../context/ProgressContext';
+import { GAMES, getCompletionPercentage, isGameCompleted } from '../config/games';
 
 const Home = () => {
     const { getProgress } = useProgress();
-
-    const modules = [
-        { to: '/lesson/count-aloud', label: 'Count Aloud', emoji: '🗣️', color: 'from-pink-500 to-rose-600', shadow: 'shadow-rose-500/40', gameId: 'count-aloud', totalLevels: 2 },
-        { to: '/lesson/count-objects', label: 'Count Objects', emoji: '🍎', color: 'from-green-400 to-emerald-600', shadow: 'shadow-emerald-500/40', gameId: 'object-count', totalLevels: 3 },
-        { to: '/lesson/math', label: 'Add & Sub', emoji: '➕', color: 'from-orange-400 to-amber-600', shadow: 'shadow-amber-500/40', gameId: 'math-game', totalLevels: 10 },
-        { to: '/lesson/symbols', label: 'Number Hunt', emoji: '🔢', color: 'from-blue-400 to-indigo-600', shadow: 'shadow-indigo-500/40', gameId: 'symbol-recog', totalLevels: 5 },
-        { to: '/lesson/typing', label: 'Typing Fun', emoji: '⌨️', color: 'from-purple-400 to-violet-600', shadow: 'shadow-violet-500/40', gameId: 'typing-game', totalLevels: 6 },
-        { to: '/lesson/clicking', label: 'Clicking', emoji: '🎈', color: 'from-red-400 to-red-600', shadow: 'shadow-red-500/40', gameId: 'clicking-game', totalLevels: 3 },
-        { to: '/lesson/sorting', label: 'Sorting', emoji: '🟦', color: 'from-cyan-400 to-cyan-600', shadow: 'shadow-cyan-500/40', gameId: 'sorting-game', totalLevels: 4 },
-        { to: '/lesson/drawing', label: 'Drawing', emoji: '🎨', color: 'from-fuchsia-400 to-pink-600', shadow: 'shadow-pink-500/40' },
-        { to: '/lesson/alphabet', label: 'Alphabet', emoji: '🦁', color: 'from-yellow-400 to-orange-600', shadow: 'shadow-orange-500/40', gameId: 'alphabet-game', totalLevels: 6 },
-        { to: '/lesson/alphabet-hard', label: 'Alphabet II', emoji: '😼', color: 'from-orange-500 to-red-600', shadow: 'shadow-red-500/40', gameId: 'alphabet-hard', totalLevels: 6 },
-        { to: '/lesson/number-hard', label: 'Number Pro', emoji: '⚡', color: 'from-blue-600 to-indigo-800', shadow: 'shadow-indigo-500/40', gameId: 'number-hard', totalLevels: 5 },
-        { to: '/lesson/bubble-pop', label: 'Bubble Pop', emoji: '🫧', color: 'from-cyan-500 to-blue-500', shadow: 'shadow-blue-400/40', gameId: 'bubble-pop' },
-        { to: '/lesson/letter-match', label: 'Letter Match', emoji: '🧩', color: 'from-violet-500 to-purple-600', shadow: 'shadow-purple-500/40', gameId: 'letter-match', totalLevels: 4 },
-        { to: '/lesson/word-start', label: 'Word Start', emoji: '📖', color: 'from-emerald-500 to-teal-600', shadow: 'shadow-teal-500/40', gameId: 'word-start', totalLevels: 6 },
-        { to: '/lesson/letter-order', label: 'Letter Order', emoji: '🔤', color: 'from-sky-500 to-blue-600', shadow: 'shadow-blue-500/40', gameId: 'letter-order', totalLevels: 6 },
-    ];
 
     const container = {
         hidden: { opacity: 0 },
@@ -60,35 +43,53 @@ const Home = () => {
                 animate="show"
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full px-4"
             >
-                {modules.map((mod) => {
-                    const stats = mod.gameId ? getProgress(mod.gameId) : null;
+                {GAMES.map((game) => {
+                    const stats = game.id ? getProgress(game.id) : null;
+                    const currentLevel = stats?.level || 1;
                     const maxLevel = stats?.maxLevel || 1;
-                    const isCompleted = Boolean(mod.totalLevels && maxLevel >= mod.totalLevels);
+                    const completed = isGameCompleted(game.id, maxLevel);
+                    const completionPercent = getCompletionPercentage(game.id, maxLevel);
 
                     const card = (
-                        <div className={`relative h-full bg-gray-900 rounded-3xl border border-white/10 p-1 overflow-hidden transition-all duration-300 ${isCompleted ? 'opacity-70 cursor-not-allowed' : 'group-hover:-translate-y-2 group-hover:border-white/30 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.1)]'}`}>
+                        <div className={`relative h-full bg-gray-900 rounded-3xl border border-white/10 p-1 overflow-hidden transition-all duration-300 ${completed ? 'opacity-70 cursor-not-allowed' : 'group-hover:-translate-y-2 group-hover:border-white/30 group-hover:shadow-[0_0_40px_rgba(255,255,255,0.1)]'}`}>
 
                             {/* Hover Glow Gradient */}
-                            <div className={`absolute inset-0 bg-gradient-to-br ${mod.color} ${isCompleted ? 'opacity-10' : 'opacity-0 group-hover:opacity-10'} transition-opacity duration-500`}></div>
+                            <div className={`absolute inset-0 bg-gradient-to-br ${game.color} ${completed ? 'opacity-10' : 'opacity-0 group-hover:opacity-10'} transition-opacity duration-500`}></div>
 
-                            {isCompleted && (
-                                <div className="absolute top-3 right-3 bg-green-500/90 text-white text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg">
+                            {completed && (
+                                <div className="absolute top-3 right-3 bg-green-500/90 text-white text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-lg z-20">
                                     ✅ Completed
                                 </div>
                             )}
 
                             <div className="bg-[#0a0a0a] rounded-[22px] h-full p-6 flex flex-col items-center text-center relative z-10">
-                                <div className={`w-24 h-24 rounded-full bg-gradient-to-br ${mod.color} flex items-center justify-center text-5xl mb-6 shadow-lg ${isCompleted ? '' : 'group-hover:scale-110 group-hover:rotate-12'} transition-all duration-300 ${mod.shadow}`}>
-                                    <span className="filter drop-shadow-md">{mod.emoji}</span>
+                                <div className={`w-24 h-24 rounded-full bg-gradient-to-br ${game.color} flex items-center justify-center text-5xl mb-6 shadow-lg ${completed ? '' : 'group-hover:scale-110 group-hover:rotate-12'} transition-all duration-300 ${game.shadow}`}>
+                                    <span className="filter drop-shadow-md">{game.emoji}</span>
                                 </div>
 
-                                <h3 className={`text-2xl font-bold text-white mb-2 tracking-wide uppercase ${isCompleted ? 'text-green-300' : 'group-hover:text-cyan-400'} transition-colors`}>
-                                    {mod.label}
+                                <h3 className={`text-2xl font-bold text-white mb-2 tracking-wide uppercase ${completed ? 'text-green-300' : 'group-hover:text-cyan-400'} transition-colors`}>
+                                    {game.label}
                                 </h3>
 
+                                {/* Progress Indicator */}
+                                {game.totalLevels && !completed && maxLevel > 1 && (
+                                    <div className="w-full mb-2">
+                                        <div className="flex justify-between text-xs text-gray-400 mb-1">
+                                            <span>Level {currentLevel}</span>
+                                            <span>{completionPercent}%</span>
+                                        </div>
+                                        <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full bg-gradient-to-r ${game.color} transition-all duration-500`}
+                                                style={{ width: `${completionPercent}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="mt-auto pt-6 w-full">
-                                    <div className={`w-full py-3 rounded-xl font-black uppercase text-sm tracking-widest ${isCompleted ? 'bg-green-700 text-white' : 'bg-gray-800 text-gray-400 group-hover:bg-gradient-to-r group-hover:text-white'} ${mod.color} transition-all duration-300 shadow-lg`}>
-                                        {isCompleted ? 'Completed' : 'Start Game'}
+                                    <div className={`w-full py-3 rounded-xl font-black uppercase text-sm tracking-widest ${completed ? 'bg-green-700 text-white' : 'bg-gray-800 text-gray-400 group-hover:bg-gradient-to-r group-hover:text-white'} ${game.color} transition-all duration-300 shadow-lg`}>
+                                        {completed ? 'Completed' : maxLevel > 1 ? 'Continue' : 'Start Game'}
                                     </div>
                                 </div>
                             </div>
@@ -96,13 +97,13 @@ const Home = () => {
                     );
 
                     return (
-                        <motion.div variants={item} key={mod.to}>
-                            {isCompleted ? (
+                        <motion.div variants={item} key={game.id}>
+                            {completed ? (
                                 <div className="block group h-full" aria-disabled="true">
                                     {card}
                                 </div>
                             ) : (
-                                <Link to={mod.to} className="block group h-full">
+                                <Link to={game.route} className="block group h-full">
                                     {card}
                                 </Link>
                             )}
@@ -115,3 +116,4 @@ const Home = () => {
 };
 
 export default Home;
+

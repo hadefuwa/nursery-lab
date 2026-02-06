@@ -12,7 +12,10 @@ const NumberHard = () => {
     // Lvl 2: 100-200 (12 items)
     // Lvl 3: 200-500 (16 items)
     // Lvl 4: 500-1000 (16 items)
-    // Lvl 5: Mastery (20 items)
+    // Lvl 5: 1000-2000 (20 items)
+    // Lvl 6: 2000-5000 (20 items)
+    // Lvl 7: 5000-10000 (24 items)
+    // Lvl 8: Mastery 0-10000 (24 items)
     const progress = getProgress('number-hard');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
 
@@ -33,7 +36,10 @@ const NumberHard = () => {
         if (lvl === 2) return { min: 100, max: 200, count: 12 };
         if (lvl === 3) return { min: 200, max: 500, count: 16 };
         if (lvl === 4) return { min: 500, max: 1000, count: 16 };
-        return { min: 0, max: 1000, count: 20 };
+        if (lvl === 5) return { min: 1000, max: 2000, count: 20 };
+        if (lvl === 6) return { min: 2000, max: 5000, count: 20 };
+        if (lvl === 7) return { min: 5000, max: 10000, count: 24 };
+        return { min: 0, max: 10000, count: 24 };
     };
 
     const generateProblem = (lvl) => {

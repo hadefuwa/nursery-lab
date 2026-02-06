@@ -13,6 +13,9 @@ const LEVEL_LETTERS = [
     ['P', 'Q', 'R', 'S', 'T'],
     ['U', 'V', 'W', 'X', 'Y', 'Z'],
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],   // combo challenge
+    ['K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'],   // combo challenge
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'],
+    ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
 ];
 
 const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);

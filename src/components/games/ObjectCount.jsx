@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useTTS } from '../../hooks/useTTS';
 import { useProgress } from '../../context/ProgressContext';
-import { FaAppleAlt, FaStar, FaCar, FaDog, FaRedo, FaLock, FaCheck } from 'react-icons/fa';
+import { FaAppleAlt, FaStar, FaCar, FaDog, FaLeaf, FaHeart, FaFish, FaRedo, FaLock, FaCheck } from 'react-icons/fa';
 
 const ITEMS = [
     { id: 'apple', icon: FaAppleAlt, color: 'text-red-500', dropShadow: 'drop-shadow-[0_0_15px_rgba(239,68,68,0.6)]' },
     { id: 'star', icon: FaStar, color: 'text-yellow-400', dropShadow: 'drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]' },
     { id: 'car', icon: FaCar, color: 'text-blue-500', dropShadow: 'drop-shadow-[0_0_15px_rgba(59,130,246,0.6)]' },
     { id: 'dog', icon: FaDog, color: 'text-amber-500', dropShadow: 'drop-shadow-[0_0_15px_rgba(245,158,11,0.6)]' },
+    { id: 'leaf', icon: FaLeaf, color: 'text-green-500', dropShadow: 'drop-shadow-[0_0_15px_rgba(34,197,94,0.6)]' },
+    { id: 'heart', icon: FaHeart, color: 'text-pink-500', dropShadow: 'drop-shadow-[0_0_15px_rgba(236,72,153,0.6)]' },
+    { id: 'fish', icon: FaFish, color: 'text-cyan-400', dropShadow: 'drop-shadow-[0_0_15px_rgba(34,211,238,0.6)]' },
 ];
 
 const ObjectCount = () => {
@@ -33,9 +36,11 @@ const ObjectCount = () => {
         // Level 2: 10 items
         // Level 3: 15 items
         // Level 4: 20 items
-        // ...
-        const target = Math.min(5 * lvl, 20);
-        return { targetNumber: target };
+        // Level 5: 25 items
+        // Level 6: 30 items
+        const targets = [5, 10, 15, 20, 25, 30];
+        const targetNumber = targets[Math.min(lvl - 1, targets.length - 1)];
+        return { targetNumber };
     };
 
     const config = getLevelConfig(currentLevel);
@@ -45,7 +50,8 @@ const ObjectCount = () => {
     }, [activeItemType, currentLevel]);
 
     const resetGame = () => {
-        const newItems = Array.from({ length: 25 }, (_, i) => ({
+        const totalItems = Math.max(25, config.targetNumber);
+        const newItems = Array.from({ length: totalItems }, (_, i) => ({
             id: i,
             counted: false,
             rotation: Math.random() * 20 - 10,
@@ -93,7 +99,7 @@ const ObjectCount = () => {
 
                 {/* Level Pips */}
                 <div className="flex gap-2 bg-black/40 p-2 rounded-xl border border-white/5 overflow-x-auto max-w-[200px] md:max-w-md">
-                    {[1, 2, 3].map(lvl => {
+                    {[1, 2, 3, 4, 5, 6].map(lvl => {
                         const unlocked = lvl <= progress.maxLevel;
                         const active = lvl === currentLevel;
                         return (
@@ -111,7 +117,7 @@ const ObjectCount = () => {
                         )
                     })}
                     {/* Placeholder for infinite levels */}
-                    {progress.maxLevel > 3 && <div className="text-gray-500 px-2">...</div>}
+                    {progress.maxLevel > 6 && <div className="text-gray-500 px-2">...</div>}
                 </div>
 
                 <div className="text-5xl font-black text-cyan-400 animate-pulse drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">

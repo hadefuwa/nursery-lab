@@ -14,6 +14,8 @@ const LetterMatch = () => {
     // Lvl 2: 4 pairs (8 cards)
     // Lvl 3: 6 pairs (12 cards)
     // Lvl 4: 8 pairs (16 cards)
+    // Lvl 5: 10 pairs (20 cards)
+    // Lvl 6: 12 pairs (24 cards)
     const progress = getProgress('letter-match');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
 
@@ -35,7 +37,8 @@ const LetterMatch = () => {
         setMatchedPairs([]);
         setIsLock(false);
 
-        const pairCount = currentLevel === 1 ? 3 : currentLevel === 2 ? 4 : currentLevel === 3 ? 6 : 8;
+        const pairCounts = [3, 4, 6, 8, 10, 12];
+        const pairCount = pairCounts[Math.min(currentLevel - 1, pairCounts.length - 1)];
 
         // Pick random letters for pairs
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

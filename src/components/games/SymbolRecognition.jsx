@@ -12,7 +12,10 @@ const SymbolRecognition = () => {
     // Lvl 2: Numbers 11-20
     // Lvl 3: Numbers 21-50
     // Lvl 4: Numbers 51-100
-    // Lvl 5: Challenge 0-100
+    // Lvl 5: Numbers 101-200
+    // Lvl 6: Numbers 201-500
+    // Lvl 7: Numbers 501-1000
+    // Lvl 8: Challenge 0-1000
     const progress = getProgress('symbol-recog');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
 
@@ -35,7 +38,10 @@ const SymbolRecognition = () => {
         if (lvl === 2) return createRange(11, 20);
         if (lvl === 3) return createRange(21, 50);
         if (lvl === 4) return createRange(51, 100);
-        return createRange(0, 100);
+        if (lvl === 5) return createRange(101, 200);
+        if (lvl === 6) return createRange(201, 500);
+        if (lvl === 7) return createRange(501, 1000);
+        return createRange(0, 1000);
     };
 
     const generateProblem = (lvl) => {
@@ -98,7 +104,7 @@ const SymbolRecognition = () => {
                 </div>
 
                 <div className="flex gap-2 p-2 rounded-xl bg-black/20 overflow-x-auto max-w-[200px] md:max-w-xs no-scrollbar">
-                    {[1, 2, 3, 4, 5].map(lvl => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(lvl => (
                         <button
                             key={lvl}
                             disabled={lvl > progress.maxLevel}

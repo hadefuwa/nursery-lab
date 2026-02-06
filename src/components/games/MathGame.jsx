@@ -13,6 +13,16 @@ const MathGame = () => {
     // Level 3: Add within 10
     // Level 4: Sub within 10
     // Level 5: Add within 20
+    // Level 6: Sub within 20
+    // Level 7: Mixed within 20
+    // Level 8: Add within 50
+    // Level 9: Sub within 50
+    // Level 10: Mixed within 50
+    // Level 11: Add within 100
+    // Level 12: Sub within 100
+    // Level 13: Mixed within 100
+    // Level 14: Add within 200
+    // Level 15: Mixed within 200
     const progress = getProgress('math-game');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
 
@@ -32,12 +42,17 @@ const MathGame = () => {
         if (lvl === 4) return { op: '-', max: 10 };
         if (lvl === 5) return { op: '+', max: 20 };
 
-        // Levels 6-10: Higher difficulty
+        // Levels 6-15: Higher difficulty
         if (lvl === 6) return { op: '-', max: 20 };
         if (lvl === 7) return { op: 'mixed', max: 20 }; // Random + or -
         if (lvl === 8) return { op: '+', max: 50 };
         if (lvl === 9) return { op: '-', max: 50 };
-        if (lvl >= 10) return { op: 'mixed', max: 100 };
+        if (lvl === 10) return { op: 'mixed', max: 50 };
+        if (lvl === 11) return { op: '+', max: 100 };
+        if (lvl === 12) return { op: '-', max: 100 };
+        if (lvl === 13) return { op: 'mixed', max: 100 };
+        if (lvl === 14) return { op: '+', max: 200 };
+        if (lvl >= 15) return { op: 'mixed', max: 200 };
 
         return { op: 'mixed', max: 20 };
     };
@@ -136,7 +151,7 @@ const MathGame = () => {
 
                 {/* Level Pips */}
                 <div className="flex gap-2 p-2 overflow-x-auto max-w-[300px] md:max-w-lg no-scrollbar">
-                    {Array.from({ length: 10 }, (_, i) => i + 1).map(lvl => {
+                    {Array.from({ length: 15 }, (_, i) => i + 1).map(lvl => {
                         const unlocked = lvl <= progress.maxLevel;
                         const active = lvl === currentLevel;
                         return (

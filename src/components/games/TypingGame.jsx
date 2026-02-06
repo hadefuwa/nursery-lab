@@ -18,6 +18,7 @@ const TypingGame = () => {
     // Lvl 2: Home Row (ASDFG...)
     // Lvl 3: Bottom Row (ZXCV...)
     // Lvl 4: All Letters
+    // Lvl 5-8: Words
     const progress = getProgress('typing-game');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
 
@@ -53,7 +54,8 @@ const TypingGame = () => {
     const WORDS = {
         5: ['CAT', 'DOG', 'MOM', 'DAD', 'SUN', 'BUS', 'CAR', 'RED'],
         6: ['LION', 'BLUE', 'JUMP', 'PLAY', 'MILK', 'BOOK', 'FISH', 'TREE'],
-        7: ['APPLE', 'HAPPY', 'WATER', 'HOUSE', 'SMILE', 'ZEBRA', 'TIGER', 'MOUSE']
+        7: ['APPLE', 'HAPPY', 'WATER', 'HOUSE', 'SMILE', 'ZEBRA', 'TIGER', 'MOUSE'],
+        8: ['DINOSAUR', 'ELEPHANT', 'BIRTHDAY', 'RAINBOW', 'KEYBOARD', 'SUNSHINE', 'FOOTBALL', 'NOTEBOOK']
     };
 
     const nextLetter = () => {
@@ -64,7 +66,7 @@ const TypingGame = () => {
             speak(`Type ${l}`);
         } else {
             // Word mode
-            const pool = WORDS[currentLevel] || WORDS[7];
+            const pool = WORDS[currentLevel] || WORDS[8];
             const w = pool[Math.floor(Math.random() * pool.length)];
             setTarget(w);
             speak(`Type ${w}`);
@@ -157,7 +159,7 @@ const TypingGame = () => {
                 </div>
 
                 <div className="flex gap-2 p-2 rounded-xl bg-black/20 overflow-x-auto max-w-[300px] no-scrollbar">
-                    {[1, 2, 3, 4, 5, 6].map(lvl => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(lvl => (
                         <button
                             key={lvl}
                             disabled={lvl > progress.maxLevel}
