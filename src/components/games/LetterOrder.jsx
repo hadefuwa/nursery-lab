@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTTS } from '../../hooks/useTTS';
 import { useProgress } from '../../context/ProgressContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaPlay, FaRedo, FaArrowRight, FaLightbulb } from 'react-icons/fa';
+import { FaPlay, FaRedo, FaArrowRight, FaLightbulb, FaHome } from 'react-icons/fa';
 import confetti from 'canvas-confetti';
 
 // ── level definitions (each array is already in correct alphabetical order) ──
@@ -21,6 +22,7 @@ const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
 const LetterOrder = () => {
     const { speak, cancel }                          = useTTS();
     const { getProgress, unlockLevel, saveLevel }    = useProgress();
+    const navigate = useNavigate();
 
     const progress = getProgress('letter-order');
     const [levelIdx, setLevelIdx]   = useState((progress.level || 1) - 1);
@@ -184,9 +186,9 @@ const LetterOrder = () => {
                         Next Level <FaArrowRight />
                     </button>
                 ) : (
-                    <div className="px-8 py-4 bg-yellow-500 rounded-2xl text-white font-bold shadow-lg">
-                        All Levels Complete! 🏆
-                    </div>
+                    <button onClick={() => navigate('/')} className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 rounded-2xl text-white font-bold shadow-lg flex items-center gap-2 hover:scale-105 transition-transform">
+                        <FaHome /> Back to Home
+                    </button>
                 )}
             </div>
         </div>

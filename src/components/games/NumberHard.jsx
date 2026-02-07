@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTTS } from '../../hooks/useTTS';
 import { useProgress } from '../../context/ProgressContext';
-import { FaFont, FaSortNumericDown, FaStar, FaLock, FaRedo, FaCheck, FaVolumeUp, FaBolt } from 'react-icons/fa';
+import { FaFont, FaSortNumericDown, FaStar, FaLock, FaRedo, FaCheck, FaVolumeUp, FaBolt, FaHome } from 'react-icons/fa';
 
 const NumberHard = () => {
     const { speak } = useTTS();
     const { getProgress, unlockLevel, saveLevel } = useProgress();
+    const navigate = useNavigate();
 
     // Progression:
     // Lvl 1: 0-100 (12 items)
@@ -161,9 +163,15 @@ const NumberHard = () => {
                                 <button onClick={() => { setScore(0); setCompleted(false); generateProblem(currentLevel); }} className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold flex gap-2 items-center hover:bg-gray-600">
                                     <FaRedo /> Again
                                 </button>
-                                <button onClick={() => setCurrentLevel(l => l + 1)} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold flex gap-2 items-center hover:bg-blue-500 shadow-lg animate-pulse">
-                                    Next Level <FaCheck />
-                                </button>
+                                {currentLevel < 5 ? (
+                                    <button onClick={() => setCurrentLevel(l => l + 1)} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold flex gap-2 items-center hover:bg-blue-500 shadow-lg animate-pulse">
+                                        Next Level <FaCheck />
+                                    </button>
+                                ) : (
+                                    <button onClick={() => navigate('/')} className="px-6 py-3 bg-green-600 text-white rounded-xl font-bold flex gap-2 items-center hover:bg-green-500 shadow-lg animate-pulse">
+                                        <FaHome /> Back to Home
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

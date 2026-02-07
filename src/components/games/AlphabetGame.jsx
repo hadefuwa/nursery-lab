@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTTS } from '../../hooks/useTTS';
 import { useProgress } from '../../context/ProgressContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaPlay, FaRedo, FaArrowRight, FaStar, FaVolumeUp } from 'react-icons/fa';
+import { FaPlay, FaRedo, FaArrowRight, FaStar, FaVolumeUp, FaHome } from 'react-icons/fa';
 import confetti from 'canvas-confetti';
 
 const ALPHABET_GROUPS = [
@@ -17,6 +18,7 @@ const ALPHABET_GROUPS = [
 const AlphabetGame = () => {
     const { speak, cancel, speaking } = useTTS();
     const { getProgress, unlockLevel, saveLevel } = useProgress();
+    const navigate = useNavigate();
 
     // Progress key: 'alphabet-game'
     const progress = getProgress('alphabet-game');
@@ -321,9 +323,9 @@ const AlphabetGame = () => {
                         Next Level <FaArrowRight />
                     </button>
                 ) : (
-                    <div className="px-8 py-4 bg-yellow-500 rounded-2xl text-white font-bold shadow-lg">
-                        All Levels Complete! 🏆
-                    </div>
+                    <button onClick={() => navigate('/')} className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 rounded-2xl text-white font-bold shadow-lg flex items-center gap-2 hover:scale-105 transition-transform">
+                        <FaHome /> Back to Home
+                    </button>
                 )}
             </div>
         </div>

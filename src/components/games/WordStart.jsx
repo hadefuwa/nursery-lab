@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTTS } from '../../hooks/useTTS';
 import { useProgress } from '../../context/ProgressContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaPlay, FaRedo, FaArrowRight, FaVolumeUp } from 'react-icons/fa';
+import { FaPlay, FaRedo, FaArrowRight, FaVolumeUp, FaHome } from 'react-icons/fa';
 import confetti from 'canvas-confetti';
 
 // ── word bank ────────────────────────────────────────────────────────────────
@@ -89,6 +90,7 @@ const shuffle      = arr => [...arr].sort(() => Math.random() - 0.5);
 const WordStart = () => {
     const { speak, cancel }                          = useTTS();
     const { getProgress, unlockLevel, saveLevel }    = useProgress();
+    const navigate = useNavigate();
 
     const progress = getProgress('word-start');
     const [levelIdx, setLevelIdx]       = useState((progress.level || 1) - 1);
@@ -261,9 +263,9 @@ const WordStart = () => {
                         Next Level <FaArrowRight />
                     </button>
                 ) : (
-                    <div className="px-8 py-4 bg-yellow-500 rounded-2xl text-white font-bold shadow-lg">
-                        All Levels Complete! 🏆
-                    </div>
+                    <button onClick={() => navigate('/')} className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 rounded-2xl text-white font-bold shadow-lg flex items-center gap-2 hover:scale-105 transition-transform">
+                        <FaHome /> Back to Home
+                    </button>
                 )}
             </div>
         </div>
