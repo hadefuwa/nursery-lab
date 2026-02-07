@@ -91,6 +91,16 @@ export const GAMES = [
         totalLevels: 6
     },
     {
+        id: 'alphabet-abcdef',
+        label: 'Letters A-F',
+        emoji: '🍎',
+        route: '/lesson/alphabet-abcdef',
+        color: 'from-green-500 to-lime-600',
+        shadow: 'shadow-lime-500/40',
+        textColor: 'text-green-500',
+        totalLevels: 6
+    },
+    {
         id: 'alphabet-hard',
         label: 'Alphabet II',
         emoji: '😼',
