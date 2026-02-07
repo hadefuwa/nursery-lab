@@ -121,6 +121,26 @@ export const GAMES = [
         totalLevels: 6
     },
     {
+        id: 'alphabet-mnopqr',
+        label: 'Letters M-R',
+        emoji: '🐵',
+        route: '/lesson/alphabet-mnopqr',
+        color: 'from-purple-500 to-pink-600',
+        shadow: 'shadow-pink-500/40',
+        textColor: 'text-purple-500',
+        totalLevels: 6
+    },
+    {
+        id: 'alphabet-stuvwxyz',
+        label: 'Letters S-Z',
+        emoji: '☀️',
+        route: '/lesson/alphabet-stuvwxyz',
+        color: 'from-indigo-500 to-purple-600',
+        shadow: 'shadow-purple-500/40',
+        textColor: 'text-indigo-500',
+        totalLevels: 8
+    },
+    {
         id: 'number-hard',
         label: 'Number Pro',
         emoji: '⚡',

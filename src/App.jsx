@@ -17,6 +17,8 @@ import AlphabetGame from './components/games/AlphabetGame';
 import AlphabetHard from './components/games/AlphabetHard';
 import AlphabetGHijkl from './components/games/AlphabetGHijkl';
 import AlphabetABCDEF from './components/games/AlphabetABCDEF';
+import AlphabetMNOPQR from './components/games/AlphabetMNOPQR';
+import AlphabetSTUVWXYZ from './components/games/AlphabetSTUVWXYZ';
 import NumberHard from './components/games/NumberHard';
 import BubblePop from './components/games/BubblePop';
 import LetterMatch from './components/games/LetterMatch';
@@ -58,6 +60,8 @@ const AnimatedRoutes = () => {
         <Route path="/lesson/alphabet-hard" element={<PageTransition><AlphabetHard /></PageTransition>} />
         <Route path="/lesson/alphabet-ghijkl" element={<PageTransition><AlphabetGHijkl /></PageTransition>} />
         <Route path="/lesson/alphabet-abcdef" element={<PageTransition><AlphabetABCDEF /></PageTransition>} />
+        <Route path="/lesson/alphabet-mnopqr" element={<PageTransition><AlphabetMNOPQR /></PageTransition>} />
+        <Route path="/lesson/alphabet-stuvwxyz" element={<PageTransition><AlphabetSTUVWXYZ /></PageTransition>} />
         <Route path="/lesson/number-hard" element={<PageTransition><NumberHard /></PageTransition>} />
         <Route path="/lesson/bubble-pop" element={<PageTransition><BubblePop /></PageTransition>} />
         <Route path="/lesson/letter-match" element={<PageTransition><LetterMatch /></PageTransition>} />
