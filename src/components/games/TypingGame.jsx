@@ -18,6 +18,7 @@ const TypingGame = () => {
     // Lvl 2: Home Row (ASDFG...)
     // Lvl 3: Bottom Row (ZXCV...)
     // Lvl 4: All Letters
+    // Lvl 5-8: Words
     const progress = getProgress('typing-game');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
 
@@ -26,14 +27,24 @@ const TypingGame = () => {
     }, [currentLevel]);
 
     const [target, setTarget] = useState('');
+    const [typedIndex, setTypedIndex] = useState(0);
     const [score, setScore] = useState(0);
     const [typedChars, setTypedChars] = useState(0);
     const [startTime, setStartTime] = useState(null);
     const [wpm, setWpm] = useState(0);
     const [shake, setShake] = useState(false);
-    const [completed, setCompleted] = useState(false); // New Win State
+    const [completed, setCompleted] = useState(false);
 
     const TARGET_SCORE = 10;
+
+    const startRound = () => {
+        setScore(0);
+        setTypedChars(0);
+        setStartTime(null);
+        setWpm(0);
+        setCompleted(false);
+        nextLetter();
+    };
 
     const getKeysForLevel = (lvl) => {
         const top = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
@@ -53,7 +64,8 @@ const TypingGame = () => {
     const WORDS = {
         5: ['CAT', 'DOG', 'MOM', 'DAD', 'SUN', 'BUS', 'CAR', 'RED'],
         6: ['LION', 'BLUE', 'JUMP', 'PLAY', 'MILK', 'BOOK', 'FISH', 'TREE'],
-        7: ['APPLE', 'HAPPY', 'WATER', 'HOUSE', 'SMILE', 'ZEBRA', 'TIGER', 'MOUSE']
+        7: ['APPLE', 'HAPPY', 'WATER', 'HOUSE', 'SMILE', 'ZEBRA', 'TIGER', 'MOUSE'],
+        8: ['DINOSAUR', 'ELEPHANT', 'BIRTHDAY', 'RAINBOW', 'KEYBOARD', 'SUNSHINE', 'FOOTBALL', 'NOTEBOOK']
     };
 
     const nextLetter = () => {
@@ -64,7 +76,7 @@ const TypingGame = () => {
             speak(`Type ${l}`);
         } else {
             // Word mode
-            const pool = WORDS[currentLevel] || WORDS[7];
+            const pool = WORDS[currentLevel] || WORDS[8];
             const w = pool[Math.floor(Math.random() * pool.length)];
             setTarget(w);
             speak(`Type ${w}`);
@@ -72,8 +84,10 @@ const TypingGame = () => {
         setTypedIndex(0); // Reset word index
     };
 
-    // We need to track index for words
-    const [typedIndex, setTypedIndex] = useState(0);
+    // Initialize game on mount or level change
+    useEffect(() => {
+        startRound();
+    }, [currentLevel]);
 
     const handleKeyPress = (key) => {
         if (!startTime) setStartTime(Date.now());
@@ -137,6 +151,8 @@ const TypingGame = () => {
 
     // Keyboard Listener
     useEffect(() => {
+        if (completed) return; // Don't listen if completed
+
         const handler = (e) => {
             const char = e.key.toUpperCase();
             if (KEYS.includes(char)) {
@@ -145,7 +161,7 @@ const TypingGame = () => {
         };
         window.addEventListener('keydown', handler);
         return () => window.removeEventListener('keydown', handler);
-    }, [target, score, completed]);
+    }, [target, score, completed, typedIndex, currentLevel]);
 
     return (
         <div className="flex flex-col items-center h-full gap-6 relative p-4">
@@ -157,7 +173,7 @@ const TypingGame = () => {
                 </div>
 
                 <div className="flex gap-2 p-2 rounded-xl bg-black/20 overflow-x-auto max-w-[300px] no-scrollbar">
-                    {[1, 2, 3, 4, 5, 6].map(lvl => (
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(lvl => (
                         <button
                             key={lvl}
                             disabled={lvl > progress.maxLevel}
