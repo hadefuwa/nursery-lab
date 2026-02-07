@@ -101,6 +101,16 @@ export const GAMES = [
         totalLevels: 6
     },
     {
+        id: 'alphabet-ghijkl',
+        label: 'Letters G-L',
+        emoji: '🦒',
+        route: '/lesson/alphabet-ghijkl',
+        color: 'from-teal-500 to-cyan-600',
+        shadow: 'shadow-cyan-500/40',
+        textColor: 'text-teal-500',
+        totalLevels: 6
+    },
+    {
         id: 'number-hard',
         label: 'Number Pro',
         emoji: '⚡',
