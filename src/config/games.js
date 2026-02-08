@@ -1,6 +1,17 @@
 // Centralized game configuration for consistent metadata across the app
 export const GAMES = [
     {
+        id: 'alphabet-category',
+        label: 'Alphabet',
+        emoji: '🔤',
+        route: '/alphabet',
+        color: 'from-yellow-400 to-orange-600',
+        shadow: 'shadow-orange-500/40',
+        textColor: 'text-yellow-500',
+        isCategory: true,
+        totalLevels: null
+    },
+    {
         id: 'count-aloud',
         label: 'Count Aloud',
         emoji: '🗣️',
@@ -79,66 +90,6 @@ export const GAMES = [
         shadow: 'shadow-pink-500/40',
         textColor: 'text-fuchsia-500',
         totalLevels: null // Free-form activity, no levels
-    },
-    {
-        id: 'alphabet-game',
-        label: 'Alphabet',
-        emoji: '🦁',
-        route: '/lesson/alphabet',
-        color: 'from-yellow-400 to-orange-600',
-        shadow: 'shadow-orange-500/40',
-        textColor: 'text-yellow-500',
-        totalLevels: 6
-    },
-    {
-        id: 'alphabet-abcdef',
-        label: 'Letters A-F',
-        emoji: '🍎',
-        route: '/lesson/alphabet-abcdef',
-        color: 'from-green-500 to-lime-600',
-        shadow: 'shadow-lime-500/40',
-        textColor: 'text-green-500',
-        totalLevels: 6
-    },
-    {
-        id: 'alphabet-hard',
-        label: 'Alphabet II',
-        emoji: '😼',
-        route: '/lesson/alphabet-hard',
-        color: 'from-orange-500 to-red-600',
-        shadow: 'shadow-red-500/40',
-        textColor: 'text-red-500',
-        totalLevels: 6
-    },
-    {
-        id: 'alphabet-ghijkl',
-        label: 'Letters G-L',
-        emoji: '🦒',
-        route: '/lesson/alphabet-ghijkl',
-        color: 'from-teal-500 to-cyan-600',
-        shadow: 'shadow-cyan-500/40',
-        textColor: 'text-teal-500',
-        totalLevels: 6
-    },
-    {
-        id: 'alphabet-mnopqr',
-        label: 'Letters M-R',
-        emoji: '🐵',
-        route: '/lesson/alphabet-mnopqr',
-        color: 'from-purple-500 to-pink-600',
-        shadow: 'shadow-pink-500/40',
-        textColor: 'text-purple-500',
-        totalLevels: 6
-    },
-    {
-        id: 'alphabet-stuvwxyz',
-        label: 'Letters S-Z',
-        emoji: '☀️',
-        route: '/lesson/alphabet-stuvwxyz',
-        color: 'from-indigo-500 to-purple-600',
-        shadow: 'shadow-purple-500/40',
-        textColor: 'text-indigo-500',
-        totalLevels: 8
     },
     {
         id: 'number-hard',

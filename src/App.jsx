@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Progress from './pages/Progress';
+import AlphabetCategory from './pages/AlphabetCategory';
 
 import CountAloud from './components/games/CountAloud';
 import ObjectCount from './components/games/ObjectCount';
@@ -46,6 +47,7 @@ const AnimatedRoutes = () => {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
+        <Route path="/alphabet" element={<PageTransition><AlphabetCategory /></PageTransition>} />
 
         {/* Lesson Routes */}
         <Route path="/lesson/count-aloud" element={<PageTransition><CountAloud /></PageTransition>} />
