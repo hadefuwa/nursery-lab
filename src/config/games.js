@@ -140,6 +140,76 @@ export const GAMES = [
         shadow: 'shadow-blue-500/40',
         textColor: 'text-sky-500',
         totalLevels: 9
+    },
+    {
+        id: 'alphabet-game',
+        label: 'Alphabet',
+        emoji: '🦁',
+        route: '/lesson/alphabet',
+        color: 'from-yellow-400 to-orange-500',
+        shadow: 'shadow-orange-500/40',
+        textColor: 'text-yellow-500',
+        totalLevels: 6
+    },
+    {
+        id: 'alphabet-hard',
+        label: 'Lowercase Challenge',
+        emoji: '🔥',
+        route: '/lesson/alphabet-hard',
+        color: 'from-red-500 to-orange-600',
+        shadow: 'shadow-red-500/40',
+        textColor: 'text-red-500',
+        totalLevels: 6
+    },
+    {
+        id: 'missing-letter',
+        label: 'Missing Letter',
+        emoji: '❓',
+        route: '/lesson/missing-letter',
+        color: 'from-blue-400 to-cyan-500',
+        shadow: 'shadow-cyan-500/40',
+        textColor: 'text-cyan-500',
+        totalLevels: 7
+    },
+    {
+        id: 'alphabet-abcdef',
+        label: 'A-F Words',
+        emoji: '🍎',
+        route: '/lesson/alphabet-abcdef',
+        color: 'from-green-400 to-emerald-600',
+        shadow: 'shadow-emerald-500/40',
+        textColor: 'text-green-500',
+        totalLevels: 6
+    },
+    {
+        id: 'alphabet-ghijkl',
+        label: 'G-L Words',
+        emoji: '🦒',
+        route: '/lesson/alphabet-ghijkl',
+        color: 'from-teal-400 to-green-600',
+        shadow: 'shadow-teal-500/40',
+        textColor: 'text-teal-500',
+        totalLevels: 6
+    },
+    {
+        id: 'alphabet-mnopqr',
+        label: 'M-R Words',
+        emoji: '🌙',
+        route: '/lesson/alphabet-mnopqr',
+        color: 'from-indigo-400 to-blue-600',
+        shadow: 'shadow-blue-500/40',
+        textColor: 'text-blue-500',
+        totalLevels: 6
+    },
+    {
+        id: 'alphabet-stuvwxyz',
+        label: 'S-Z Words',
+        emoji: '☀️',
+        route: '/lesson/alphabet-stuvwxyz',
+        color: 'from-purple-400 to-fuchsia-600',
+        shadow: 'shadow-purple-500/40',
+        textColor: 'text-purple-500',
+        totalLevels: 8
     }
 ];
 
