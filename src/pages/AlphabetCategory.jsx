@@ -9,6 +9,16 @@ const AlphabetCategory = () => {
 
     const alphabetLessons = [
         {
+            id: 'missing-letter',
+            label: 'Missing Letter',
+            emoji: '❓',
+            route: '/lesson/missing-letter',
+            color: 'from-pink-500 to-rose-600',
+            shadow: 'shadow-rose-500/40',
+            totalLevels: 5,
+            description: 'Find the missing first letter!'
+        },
+        {
             id: 'alphabet-abcdef',
             label: 'Letters A-F',
             emoji: '🍎',

@@ -25,6 +25,7 @@ import BubblePop from './components/games/BubblePop';
 import LetterMatch from './components/games/LetterMatch';
 import WordStart from './components/games/WordStart';
 import LetterOrder from './components/games/LetterOrder';
+import MissingLetter from './components/games/MissingLetter';
 
 // Page Transition Wrapper
 const PageTransition = ({ children }) => (
@@ -69,6 +70,7 @@ const AnimatedRoutes = () => {
         <Route path="/lesson/letter-match" element={<PageTransition><LetterMatch /></PageTransition>} />
         <Route path="/lesson/word-start" element={<PageTransition><WordStart /></PageTransition>} />
         <Route path="/lesson/letter-order" element={<PageTransition><LetterOrder /></PageTransition>} />
+        <Route path="/lesson/missing-letter" element={<PageTransition><MissingLetter /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
