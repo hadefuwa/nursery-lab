@@ -102,12 +102,19 @@ const ShapeHunt = () => {
       if (i === targetIndex) {
         cells.push({ key: `t-${i}`, shape: target.shape, color: target.color, isTarget: true });
       } else {
-        const shape = availableShapes[rand(availableShapes.length)];
-        const color = COLORS[rand(Math.min(COLORS.length, Math.max(2, Math.ceil(currentLevel / 2))))];
-        cells.push({ key: `x-${i}`, shape, color, isTarget: shape === target.shape && color.name === target.color.name });
+        // Avoid generating any non-target cell that matches the target exactly.
+        // Otherwise kids can click the "right" tile and still get marked wrong.
+        const paletteSize = Math.min(COLORS.length, Math.max(2, Math.ceil(currentLevel / 2)));
+        let shape;
+        let color;
+        do {
+          shape = availableShapes[rand(availableShapes.length)];
+          color = COLORS[rand(paletteSize)];
+        } while (shape === target.shape && color.name === target.color.name);
+
+        cells.push({ key: `x-${i}`, shape, color, isTarget: false });
       }
     }
-    // Ensure there is exactly one real target; if duplicates happen, they are treated as wrong to keep it simple.
     return cells;
   }, [availableShapes, currentLevel, target]);
 
@@ -142,7 +149,7 @@ const ShapeHunt = () => {
   const handlePick = (cell) => {
     if (roundState !== 'playing') return;
 
-    const isCorrect = cell.shape === target.shape && cell.color.name === target.color.name && cell.key.startsWith('t-');
+    const isCorrect = cell.shape === target.shape && cell.color.name === target.color.name;
     setFlashKey(cell.key);
     setFlashType(isCorrect ? 'correct' : 'wrong');
     setTimeout(() => {
