@@ -1,10 +1,25 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaStar } from 'react-icons/fa';
+import { useProgress } from '../../context/ProgressContext';
+import { GAMES } from '../../config/games';
 
 const NavBar = () => {
     const location = useLocation();
     const isHome = location.pathname === '/';
+    const { progress } = useProgress();
+
+    // "Stars" = total completed levels across all level-based lessons.
+    // Categories and free-play activities (no totalLevels) don't contribute.
+    const totalStars = React.useMemo(() => {
+        return GAMES
+            .filter(g => g.totalLevels && !g.isCategory)
+            .reduce((sum, g) => {
+                const stats = progress?.[g.id];
+                const maxLevel = stats?.maxLevel || 1;
+                return sum + Math.min(g.totalLevels, Math.max(0, maxLevel));
+            }, 0);
+    }, [progress]);
 
     return (
         <header className="fixed top-0 left-0 w-full z-50 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5">
@@ -31,7 +46,7 @@ const NavBar = () => {
                 <div className="flex justify-end w-24">
                     <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-xl border border-white/5 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                         <FaStar className="text-yellow-400 text-lg drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]" />
-                        <span className="font-bold text-lg text-white">0</span>
+                        <span className="font-bold text-lg text-white">{totalStars}</span>
                     </div>
                 </div>
             </div>
