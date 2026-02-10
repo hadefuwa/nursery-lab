@@ -157,10 +157,20 @@ const BubblePop = () => {
                     <div className="text-xl text-white font-bold">LEVEL {currentLevel} • ROUND {roundsWon + 1}/{TARGET_WINS}</div>
                 </div>
                 {isPlaying && (
-                    <div className="flex flex-col items-center animate-pulse">
-                        <span className="text-sm text-gray-400 font-bold uppercase">TARGET</span>
-                        <span className="text-4xl font-black text-yellow-400 drop-shadow-lg">{targetLetter}</span>
-                    </div>
+                    <>
+                        <div className="flex flex-col items-center">
+                            <span className="text-sm text-gray-400 font-bold uppercase">Score</span>
+                            <div className="flex gap-1">
+                                {[...Array(5)].map((_, i) => (
+                                    <FaStar key={i} className={`text-2xl ${i < score ? 'text-yellow-400' : 'text-gray-600'}`} />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="flex flex-col items-center animate-pulse">
+                            <span className="text-sm text-gray-400 font-bold uppercase">TARGET</span>
+                            <span className="text-4xl font-black text-yellow-400 drop-shadow-lg">{targetLetter}</span>
+                        </div>
+                    </>
                 )}
                 <button onClick={() => { stopGame(); setRoundsWon(0); setIsPlaying(false); }} className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500 hover:text-white font-bold">
                     EXIT

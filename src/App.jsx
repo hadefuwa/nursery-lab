@@ -29,6 +29,7 @@ import WordStart from './components/games/WordStart';
 import LetterOrder from './components/games/LetterOrder';
 import MissingLetter from './components/games/MissingLetter';
 import PacmanLetter from './components/games/PacmanLetter';
+import PacmanNumber from './components/games/PacmanNumber';
 import ShapeHunt from './components/games/ShapeHunt';
 import ColorHunt from './components/games/ColorHunt';
 import PatternRepeat from './components/games/PatternRepeat';
@@ -80,6 +81,7 @@ const AnimatedRoutes = () => {
         <Route path="/lesson/letter-order" element={<PageTransition><LetterOrder /></PageTransition>} />
         <Route path="/lesson/missing-letter" element={<PageTransition><MissingLetter /></PageTransition>} />
         <Route path="/lesson/pacman-letter" element={<PageTransition><PacmanLetter /></PageTransition>} />
+        <Route path="/lesson/pacman-number" element={<PageTransition><PacmanNumber /></PageTransition>} />
         <Route path="/lesson/shape-hunt" element={<PageTransition><ShapeHunt /></PageTransition>} />
         <Route path="/lesson/color-hunt" element={<PageTransition><ColorHunt /></PageTransition>} />
         <Route path="/lesson/pattern-repeat" element={<PageTransition><PatternRepeat /></PageTransition>} />

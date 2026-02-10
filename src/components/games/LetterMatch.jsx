@@ -49,15 +49,21 @@ const LetterMatch = () => {
             const idx = Math.floor(Math.random() * alphabet.length);
             if (!usedIndices.has(idx)) {
                 usedIndices.add(idx);
-                selectedLetters.push(alphabet[idx]);
+                const letter = alphabet.charAt(idx);
+                // Verify it's a valid letter
+                if (letter && /[A-Z]/.test(letter)) {
+                    selectedLetters.push(letter);
+                }
             }
         }
 
         // Create pairs: "A" (Upper) and "a" (Lower)
         const newCards = [];
         selectedLetters.forEach(letter => {
-            newCards.push({ id: `${letter}-U`, value: letter, type: 'upper', pairId: letter });
-            newCards.push({ id: `${letter}-L`, value: letter.toLowerCase(), type: 'lower', pairId: letter });
+            const upperLetter = letter.toUpperCase();
+            const lowerLetter = letter.toLowerCase();
+            newCards.push({ id: `${upperLetter}-U`, value: upperLetter, type: 'upper', pairId: upperLetter });
+            newCards.push({ id: `${upperLetter}-L`, value: lowerLetter, type: 'lower', pairId: upperLetter });
         });
 
         // Shuffle
@@ -169,8 +175,8 @@ const LetterMatch = () => {
                                             className="absolute inset-0 bg-white rounded-xl border-4 border-purple-500 shadow-xl flex items-center justify-center backface-hidden"
                                             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                                         >
-                                            <span className={`font-black ${card.type === 'upper' ? 'text-6xl text-purple-600' : 'text-5xl text-pink-500'}`}>
-                                                {card.value}
+                                            <span className={`font-black ${card.type === 'upper' ? 'text-6xl text-purple-600' : 'text-5xl text-pink-500'}`} style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                                                {String(card.value).trim() || '?'}
                                             </span>
                                             <span className="absolute bottom-2 right-2 text-xs font-bold text-gray-300 uppercase">
                                                 {card.type}
