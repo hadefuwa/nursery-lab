@@ -1,4 +1,4 @@
-// Centralized game configuration for consistent metadata across the app
+﻿// Centralized game configuration for consistent metadata across the app
 export const GAMES = [
     {
         id: 'alphabet-category',
@@ -231,7 +231,27 @@ export const GAMES = [
         color: 'from-purple-400 to-fuchsia-600',
         shadow: 'shadow-purple-500/40',
         textColor: 'text-purple-500',
-        totalLevels: 8
+        totalLevels: 8    },
+    {
+        id: 'pacman-letter',
+        label: 'Pacman Letters',
+        emoji: '🟡',
+        route: '/lesson/pacman-letter',
+        color: 'from-yellow-400 to-orange-500',
+        shadow: 'shadow-yellow-500/40',
+        textColor: 'text-yellow-500',
+        totalLevels: 10
+    },
+    {
+        id: 'pacman-number',
+        label: 'Pacman Numbers',
+        emoji: '🎯',
+        route: '/lesson/pacman-number',
+        color: 'from-blue-400 to-cyan-500',
+        shadow: 'shadow-cyan-500/40',
+        textColor: 'text-blue-500',
+        totalLevels: 10
+
     }
 ];
 
