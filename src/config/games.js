@@ -12,6 +12,28 @@ export const GAMES = [
         totalLevels: null
     },
     {
+        id: 'shapes-category',
+        label: 'Shapes & Colors',
+        emoji: '🔷',
+        route: '/shapes',
+        color: 'from-cyan-500 to-blue-600',
+        shadow: 'shadow-blue-500/40',
+        textColor: 'text-cyan-400',
+        isCategory: true,
+        totalLevels: null
+    },
+    {
+        id: 'memory-category',
+        label: 'Memory & Logic',
+        emoji: '🧠',
+        route: '/memory',
+        color: 'from-emerald-500 to-teal-600',
+        shadow: 'shadow-teal-500/40',
+        textColor: 'text-emerald-400',
+        isCategory: true,
+        totalLevels: null
+    },
+    {
         id: 'count-aloud',
         label: 'Count Aloud',
         emoji: '🗣️',

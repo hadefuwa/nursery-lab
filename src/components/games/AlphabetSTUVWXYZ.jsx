@@ -378,5 +378,4 @@ const AlphabetSTUVWXYZ = () => {
     );
 };
 
-export default AlphabetSTUVWXYZ;</content>
-<parameter name="filePath">c:\Users\Hamed\Documents\nursery-lab\src\components\games\AlphabetSTUVWXYZ.jsx
+export default AlphabetSTUVWXYZ;

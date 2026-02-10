@@ -368,5 +368,4 @@ const AlphabetMNOPQR = () => {
     );
 };
 
-export default AlphabetMNOPQR;</content>
-<parameter name="filePath">c:\Users\Hamed\Documents\nursery-lab\src\components\games\AlphabetMNOPQR.jsx
+export default AlphabetMNOPQR;

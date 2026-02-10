@@ -368,5 +368,4 @@ const AlphabetGHijkl = () => {
     );
 };
 
-export default AlphabetGHijkl;</content>
-<parameter name="filePath">c:\Users\Hamed\Documents\nursery-lab\src\components\games\AlphabetGHijkl.jsx
+export default AlphabetGHijkl;

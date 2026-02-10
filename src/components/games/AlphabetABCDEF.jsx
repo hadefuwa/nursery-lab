@@ -368,5 +368,4 @@ const AlphabetABCDEF = () => {
     );
 };
 
-export default AlphabetABCDEF;</content>
-<parameter name="filePath">c:\Users\Hamed\Documents\nursery-lab\src\components\games\AlphabetABCDEF.jsx
+export default AlphabetABCDEF;

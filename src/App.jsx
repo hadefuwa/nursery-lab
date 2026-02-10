@@ -5,6 +5,8 @@ import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Progress from './pages/Progress';
 import AlphabetCategory from './pages/AlphabetCategory';
+import ShapesCategory from './pages/ShapesCategory';
+import MemoryCategory from './pages/MemoryCategory';
 
 import CountAloud from './components/games/CountAloud';
 import ObjectCount from './components/games/ObjectCount';
@@ -26,6 +28,10 @@ import LetterMatch from './components/games/LetterMatch';
 import WordStart from './components/games/WordStart';
 import LetterOrder from './components/games/LetterOrder';
 import MissingLetter from './components/games/MissingLetter';
+import PacmanLetter from './components/games/PacmanLetter';
+import ShapeHunt from './components/games/ShapeHunt';
+import ColorHunt from './components/games/ColorHunt';
+import PatternRepeat from './components/games/PatternRepeat';
 
 // Page Transition Wrapper
 const PageTransition = ({ children }) => (
@@ -49,6 +55,8 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<PageTransition><Home /></PageTransition>} />
         <Route path="/progress" element={<PageTransition><Progress /></PageTransition>} />
         <Route path="/alphabet" element={<PageTransition><AlphabetCategory /></PageTransition>} />
+        <Route path="/shapes" element={<PageTransition><ShapesCategory /></PageTransition>} />
+        <Route path="/memory" element={<PageTransition><MemoryCategory /></PageTransition>} />
 
         {/* Lesson Routes */}
         <Route path="/lesson/count-aloud" element={<PageTransition><CountAloud /></PageTransition>} />
@@ -71,6 +79,10 @@ const AnimatedRoutes = () => {
         <Route path="/lesson/word-start" element={<PageTransition><WordStart /></PageTransition>} />
         <Route path="/lesson/letter-order" element={<PageTransition><LetterOrder /></PageTransition>} />
         <Route path="/lesson/missing-letter" element={<PageTransition><MissingLetter /></PageTransition>} />
+        <Route path="/lesson/pacman-letter" element={<PageTransition><PacmanLetter /></PageTransition>} />
+        <Route path="/lesson/shape-hunt" element={<PageTransition><ShapeHunt /></PageTransition>} />
+        <Route path="/lesson/color-hunt" element={<PageTransition><ColorHunt /></PageTransition>} />
+        <Route path="/lesson/pattern-repeat" element={<PageTransition><PatternRepeat /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
