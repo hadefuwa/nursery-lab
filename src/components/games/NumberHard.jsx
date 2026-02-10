@@ -9,15 +9,16 @@ const NumberHard = () => {
     const { getProgress, unlockLevel, saveLevel } = useProgress();
     const navigate = useNavigate();
 
-    // Progression:
-    // Lvl 1: 0-100 (12 items)
-    // Lvl 2: 100-200 (12 items)
-    // Lvl 3: 200-500 (16 items)
-    // Lvl 4: 500-1000 (16 items)
-    // Lvl 5: 1000-2000 (20 items)
-    // Lvl 6: 2000-5000 (20 items)
-    // Lvl 7: 5000-10000 (24 items)
-    // Lvl 8: Mastery 0-10000 (24 items)
+    // Progression (4yo-friendly):
+    // Keep two-digit numbers <= 20.
+    // Lvl 1: 0-10 (12 items)
+    // Lvl 2: 0-20 (12 items)
+    // Lvl 3: 0-20 (16 items, trickier distractors)
+    // Lvl 4: 0-20 (16 items)
+    // Lvl 5: 0-20 (20 items)
+    // Lvl 6: 0-20 (20 items)
+    // Lvl 7: 0-20 (24 items)
+    // Lvl 8: Mastery 0-20 (24 items)
     const progress = getProgress('number-hard');
     const [currentLevel, setCurrentLevel] = useState(progress.level || 1);
 
@@ -34,14 +35,14 @@ const NumberHard = () => {
     const TARGET_SCORE = 8; // More to win
 
     const getLevelConfig = (lvl) => {
-        if (lvl === 1) return { min: 0, max: 100, count: 12 };
-        if (lvl === 2) return { min: 100, max: 200, count: 12 };
-        if (lvl === 3) return { min: 200, max: 500, count: 16 };
-        if (lvl === 4) return { min: 500, max: 1000, count: 16 };
-        if (lvl === 5) return { min: 1000, max: 2000, count: 20 };
-        if (lvl === 6) return { min: 2000, max: 5000, count: 20 };
-        if (lvl === 7) return { min: 5000, max: 10000, count: 24 };
-        return { min: 0, max: 10000, count: 24 };
+        if (lvl === 1) return { min: 0, max: 10, count: 12 };
+        if (lvl === 2) return { min: 0, max: 20, count: 12 };
+        if (lvl === 3) return { min: 0, max: 20, count: 16 };
+        if (lvl === 4) return { min: 0, max: 20, count: 16 };
+        if (lvl === 5) return { min: 0, max: 20, count: 20 };
+        if (lvl === 6) return { min: 0, max: 20, count: 20 };
+        if (lvl === 7) return { min: 0, max: 20, count: 24 };
+        return { min: 0, max: 20, count: 24 };
     };
 
     const generateProblem = (lvl) => {
