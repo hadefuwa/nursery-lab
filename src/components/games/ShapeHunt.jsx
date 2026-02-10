@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTTS } from '../../hooks/useTTS';
 import { useProgress } from '../../context/ProgressContext';
-import { FaLock, FaRedo, FaArrowRight, FaBullseye } from 'react-icons/fa';
+import { FaLock, FaRedo, FaArrowRight, FaBullseye, FaVolumeUp } from 'react-icons/fa';
 
 const TOTAL_LEVELS = 8;
 
@@ -41,6 +41,12 @@ const SHAPE_LABEL = {
   heart: 'Heart',
   hex: 'Hexagon',
   pill: 'Pill'
+};
+
+const sayTarget = (t) => {
+  const colorName = t?.color?.name || 'the';
+  const shapeName = SHAPE_LABEL[t?.shape] || 'shape';
+  return `Find the ${colorName} ${shapeName}.`;
 };
 
 const ShapeTile = ({ shape, color, onPick, isWrongFlash, isCorrectFlash }) => {
@@ -83,6 +89,7 @@ const ShapeHunt = () => {
   const [roundState, setRoundState] = useState('playing'); // playing | won
   const [flashKey, setFlashKey] = useState(null);
   const [flashType, setFlashType] = useState(null); // wrong | correct
+  const lastSpokenTargetRef = useRef('');
 
   const availableShapes = useMemo(() => SHAPES_BY_LEVEL[Math.min(TOTAL_LEVELS, Math.max(1, currentLevel))] || SHAPES_BY_LEVEL[1], [currentLevel]);
   const targetScore = 6 + currentLevel; // gentle ramp
@@ -108,9 +115,15 @@ const ShapeHunt = () => {
     saveLevel('shape-hunt', currentLevel);
   }, [currentLevel]);
 
+  const speakTarget = () => {
+    const phrase = sayTarget(target);
+    lastSpokenTargetRef.current = phrase;
+    speak(phrase);
+  };
+
   useEffect(() => {
     if (roundState !== 'playing') return;
-    speak(`Find ${target.color.name} ${SHAPE_LABEL[target.shape]}.`);
+    speakTarget();
   }, [target, roundState]);
 
   const resetRound = (level) => {
@@ -150,7 +163,9 @@ const ShapeHunt = () => {
         setTarget(makeTarget(availableShapes, currentLevel));
       }
     } else {
-      speak('Try again');
+      const clickedShape = SHAPE_LABEL[cell.shape] || 'shape';
+      const clickedColor = cell.color?.name || 'color';
+      speak(`That is ${clickedColor} ${clickedShape}. ${sayTarget(target)}`);
     }
   };
 
@@ -196,6 +211,12 @@ const ShapeHunt = () => {
               {target.color.name} {SHAPE_LABEL[target.shape]}
             </div>
           </div>
+          <button
+            onClick={speakTarget}
+            className="px-5 py-3 rounded-2xl bg-cyan-600/20 hover:bg-cyan-600/30 border border-cyan-500/30 text-cyan-200 font-black uppercase tracking-widest text-xs flex items-center gap-2 transition-all active:scale-95"
+          >
+            <FaVolumeUp /> Say it
+          </button>
         </div>
       </div>
 
@@ -241,4 +262,3 @@ const ShapeHunt = () => {
 };
 
 export default ShapeHunt;
-
