@@ -39,7 +39,7 @@ const AlphabetHard = () => {
     const [feedback, setFeedback] = useState(null); // 'correct' | 'incorrect'
 
     // Helpers
-    const currentGroup = ALPHABET_GROUPS[currentGroupIndex] || ALPHABET_GROUPS[0];
+    const currentGroup = ALPHABET_GROUPS[currentGroupIndex % ALPHABET_GROUPS.length];
 
     useEffect(() => {
         saveLevel('alphabet-hard', currentGroupIndex + 1);
@@ -113,7 +113,7 @@ const AlphabetHard = () => {
             triggerConfetti();
             const nextLevel = currentGroupIndex + 1;
             speak("Outstanding work! You know your small letters!", () => {
-                if (nextLevel < ALPHABET_GROUPS.length) {
+                if (nextLevel < 50) {
                     unlockLevel('alphabet-hard', nextLevel + 1);
                 }
             });
@@ -148,7 +148,7 @@ const AlphabetHard = () => {
     };
 
     const nextLevel = () => {
-        if (currentGroupIndex < ALPHABET_GROUPS.length - 1) {
+        if (currentGroupIndex < 50 - 1) {
             setCurrentGroupIndex(prev => prev + 1);
             setMode('INTRO');
         }
@@ -256,7 +256,7 @@ const AlphabetHard = () => {
                 <button onClick={restartLevel} className="px-8 py-4 bg-gray-700 hover:bg-gray-600 rounded-2xl text-white font-bold flex items-center gap-2">
                     <FaRedo /> Replay
                 </button>
-                {currentGroupIndex < ALPHABET_GROUPS.length - 1 ? (
+                {currentGroupIndex < 50 - 1 ? (
                     <button onClick={nextLevel} className="px-8 py-4 bg-red-600 hover:bg-red-500 rounded-2xl text-white font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition-transform">
                         Next Challenge <FaArrowRight />
                     </button>
@@ -272,8 +272,8 @@ const AlphabetHard = () => {
     return (
         <div className="min-h-full flex flex-col pt-20 pb-4 relative">
             {/* Progress selector */}
-            <div className="absolute top-4 right-4 flex gap-2 z-50 flex-wrap justify-end max-w-[300px]">
-                {ALPHABET_GROUPS.map((_, idx) => (
+            <div className="absolute top-4 right-4 flex gap-2 z-50 overflow-x-auto max-w-[80vw] p-2 no-scrollbar">
+                {Array.from({ length: 50 }, (_, i) => i).map((idx) => (
                     <button
                         key={idx}
                         onClick={() => {

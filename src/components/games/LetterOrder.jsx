@@ -23,25 +23,25 @@ const shuffle = arr => [...arr].sort(() => Math.random() - 0.5);
 
 // ── component ────────────────────────────────────────────────────────────────
 const LetterOrder = () => {
-    const { speak, cancel }                          = useTTS();
-    const { getProgress, unlockLevel, saveLevel }    = useProgress();
+    const { speak, cancel } = useTTS();
+    const { getProgress, unlockLevel, saveLevel } = useProgress();
     const navigate = useNavigate();
 
     const progress = getProgress('letter-order');
-    const [levelIdx, setLevelIdx]   = useState((progress.level || 1) - 1);
-    const [mode, setMode]           = useState('INTRO');   // INTRO | PLAY | VICTORY
-    const [shuffled, setShuffled]   = useState([]);        // tappable cards (randomised)
-    const [placed, setPlaced]       = useState([]);        // letters placed in order so far
-    const [shakeId, setShakeId]     = useState(null);      // letter currently being shaken
+    const [levelIdx, setLevelIdx] = useState((progress.level || 1) - 1);
+    const [mode, setMode] = useState('INTRO');   // INTRO | PLAY | VICTORY
+    const [shuffled, setShuffled] = useState([]);        // tappable cards (randomised)
+    const [placed, setPlaced] = useState([]);        // letters placed in order so far
+    const [shakeId, setShakeId] = useState(null);      // letter currently being shaken
 
-    const letters = LEVEL_LETTERS[levelIdx];               // correct order (source of truth)
+    const letters = LEVEL_LETTERS[levelIdx % LEVEL_LETTERS.length];               // correct order (source of truth)
 
     // persist + cleanup
     useEffect(() => { saveLevel('letter-order', levelIdx + 1); }, [levelIdx]);
     useEffect(() => () => cancel(), []);
 
     // ── sizing: shrink cards when there are many letters ──
-    const big       = letters.length <= 6;
+    const big = letters.length <= 6;
     const sizeClass = big ? 'w-16 h-16 md:w-20 md:h-20 text-3xl md:text-4xl' : 'w-12 h-12 md:w-16 md:h-16 text-2xl md:text-3xl';
 
     // ── actions ──
@@ -82,7 +82,7 @@ const LetterOrder = () => {
         }
     };
 
-    const nextLevel = () => { setLevelIdx(i => i + 1); setMode('INTRO'); };
+    const nextLevel = () => { if (levelIdx < 50 - 1) { setLevelIdx(i => i + 1); setMode('INTRO'); } };
 
     // ── renders ──────────────────────────────────────────────────────────────
     const renderIntro = () => (
@@ -99,7 +99,7 @@ const LetterOrder = () => {
                     </div>
                 ))}
             </div>
-            <p className="text-lg text-white/50">Level {levelIdx + 1} of {LEVEL_LETTERS.length}</p>
+            <p className="text-lg text-white/50">Level {levelIdx + 1} of 50</p>
             <button
                 onClick={startPlay}
                 className="px-12 py-5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full text-2xl font-black text-white shadow-[0_0_30px_rgba(14,165,233,0.5)] hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
@@ -123,7 +123,7 @@ const LetterOrder = () => {
             <div className="flex gap-2 flex-wrap justify-center">
                 {letters.map((_, i) => {
                     const isPlaced = i < placed.length;
-                    const isNext   = i === placed.length;
+                    const isNext = i === placed.length;
                     return (
                         <motion.div
                             key={i}
@@ -184,7 +184,7 @@ const LetterOrder = () => {
                 <button onClick={() => setMode('INTRO')} className="px-8 py-4 bg-gray-700 hover:bg-gray-600 rounded-2xl text-white font-bold flex items-center gap-2 transition-colors">
                     <FaRedo /> Replay
                 </button>
-                {levelIdx < LEVEL_LETTERS.length - 1 ? (
+                {levelIdx < 50 - 1 ? (
                     <button onClick={nextLevel} className="px-8 py-4 bg-sky-500 hover:bg-sky-400 rounded-2xl text-white font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition-all">
                         Next Level <FaArrowRight />
                     </button>
@@ -200,8 +200,8 @@ const LetterOrder = () => {
     return (
         <div className="min-h-full flex flex-col pt-16 pb-4">
             {/* level nav */}
-            <div className="absolute top-4 right-4 flex gap-2 z-50">
-                {LEVEL_LETTERS.map((_, idx) => (
+            <div className="absolute top-4 right-4 flex gap-2 z-50 overflow-x-auto max-w-[80vw] p-2 no-scrollbar">
+                {Array.from({ length: 50 }, (_, i) => i).map((idx) => (
                     <button
                         key={idx}
                         onClick={() => {
@@ -224,8 +224,8 @@ const LetterOrder = () => {
                 ))}
             </div>
 
-            {mode === 'INTRO'   && renderIntro()}
-            {mode === 'PLAY'    && renderPlay()}
+            {mode === 'INTRO' && renderIntro()}
+            {mode === 'PLAY' && renderPlay()}
             {mode === 'VICTORY' && renderVictory()}
         </div>
     );

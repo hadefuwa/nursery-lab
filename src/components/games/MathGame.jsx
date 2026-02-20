@@ -173,11 +173,10 @@ const MathGame = () => {
         if (count > 10) return null;
 
         return Array.from({ length: count }).map((_, i) => (
-            <div key={i} className={`relative text-5xl md:text-6xl transition-all duration-500 ${
-                isSubtraction && i >= count - crossedOut
+            <div key={i} className={`relative text-5xl md:text-6xl transition-all duration-500 ${isSubtraction && i >= count - crossedOut
                     ? 'opacity-20 grayscale blur-sm scale-75'
                     : 'drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]'
-            }`}>
+                }`}>
                 <span>{emoji}</span>
                 {isSubtraction && i >= count - crossedOut && (
                     <div className="absolute inset-0 flex items-center justify-center text-red-500 text-6xl font-bold" style={{ textShadow: '0 0 10px black' }}>✖</div>
@@ -198,7 +197,7 @@ const MathGame = () => {
 
                 {/* Level Pips */}
                 <div className="flex gap-2 p-2 overflow-x-auto max-w-[300px] md:max-w-lg no-scrollbar">
-                    {Array.from({ length: 15 }, (_, i) => i + 1).map(lvl => {
+                    {Array.from({ length: 50 }, (_, i) => i + 1).map(lvl => {
                         const unlocked = lvl <= progress.maxLevel;
                         const active = lvl === currentLevel;
                         return (

@@ -69,7 +69,7 @@ const AlphabetABCDEF = () => {
     const [questionMode, setQuestionMode] = useState('find');
 
     // Helpers
-    const currentLetter = TARGET_LETTERS[currentLetterIndex] || TARGET_LETTERS[0];
+    const currentLetter = TARGET_LETTERS[currentLetterIndex % TARGET_LETTERS.length];
     const currentWords = LETTER_WORDS[currentLetter] || [];
 
     useEffect(() => {
@@ -160,7 +160,7 @@ const AlphabetABCDEF = () => {
 
     // Navigation functions
     const nextLevel = () => {
-        if (currentLetterIndex < TARGET_LETTERS.length - 1) {
+        if (currentLetterIndex < 50 - 1) {
             setCurrentLetterIndex(currentLetterIndex + 1);
             setMode('INTRO');
             setTeachIndex(0);
@@ -286,8 +286,8 @@ const AlphabetABCDEF = () => {
                             ${feedback === 'correct' && option.word === quizTarget.word
                                 ? 'bg-green-500 text-white shadow-[0_0_30px_rgba(34,197,94,0.6)] scale-110 z-10'
                                 : feedback === 'incorrect' && option.word === quizTarget.word
-                                ? 'bg-red-500 text-white shadow-[0_0_30px_rgba(239,68,68,0.6)] scale-110 z-10'
-                                : 'bg-gray-800 text-blue-100 border border-blue-500/20 hover:border-blue-400 hover:bg-gray-700 hover:scale-105 active:scale-95'
+                                    ? 'bg-red-500 text-white shadow-[0_0_30px_rgba(239,68,68,0.6)] scale-110 z-10'
+                                    : 'bg-gray-800 text-blue-100 border border-blue-500/20 hover:border-blue-400 hover:bg-gray-700 hover:scale-105 active:scale-95'
                             }
                         `}
                         disabled={feedback !== null}
@@ -315,7 +315,7 @@ const AlphabetABCDEF = () => {
                 <button onClick={restartLevel} className="px-8 py-4 bg-gray-700 hover:bg-gray-600 rounded-2xl text-white font-bold flex items-center gap-2">
                     <FaRedo /> Replay
                 </button>
-                {currentLetterIndex < TARGET_LETTERS.length - 1 ? (
+                {currentLetterIndex < 50 - 1 ? (
                     <button onClick={nextLevel} className="px-8 py-4 bg-red-600 hover:bg-red-500 rounded-2xl text-white font-bold flex items-center gap-2 shadow-lg hover:scale-105 transition-transform">
                         Next Letter <FaArrowRight />
                     </button>
@@ -331,27 +331,29 @@ const AlphabetABCDEF = () => {
     return (
         <div className="min-h-full flex flex-col pt-20 pb-4 relative">
             {/* Progress selector */}
-            <div className="absolute top-4 right-4 flex gap-2 z-50 flex-wrap justify-end max-w-[300px]">
-                {TARGET_LETTERS.map((letter, idx) => (
-                    <button
-                        key={letter}
-                        onClick={() => {
-                            if (idx + 1 <= (progress.maxLevel || 1)) {
-                                setCurrentLetterIndex(idx);
-                                setMode('INTRO');
-                            }
-                        }}
-                        className={`px-3 py-2 rounded-lg font-bold text-sm transition-all ${
-                            idx === currentLetterIndex
-                                ? 'bg-yellow-500 text-black shadow-lg'
-                                : idx + 1 <= (progress.maxLevel || 1)
-                                ? 'bg-gray-700 text-white hover:bg-gray-600'
-                                : 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                        }`}
-                    >
-                        {letter}
-                    </button>
-                ))}
+            <div className="absolute top-4 right-4 flex gap-2 z-50 overflow-x-auto max-w-[80vw] p-2 no-scrollbar">
+                {Array.from({ length: 50 }, (_, i) => i).map((idx) => {
+                    const letter = TARGET_LETTERS[idx % TARGET_LETTERS.length];
+                    return (
+                        <button
+                            key={`${letter}-${idx}`}
+                            onClick={() => {
+                                if (idx + 1 <= (progress.maxLevel || 1)) {
+                                    setCurrentLetterIndex(idx);
+                                    setMode('INTRO');
+                                }
+                            }}
+                            className={`px-3 py-2 rounded-lg font-bold text-sm transition-all ${idx === currentLetterIndex
+                                    ? 'bg-yellow-500 text-black shadow-lg'
+                                    : idx + 1 <= (progress.maxLevel || 1)
+                                        ? 'bg-gray-700 text-white hover:bg-gray-600'
+                                        : 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                                }`}
+                        >
+                            {letter}
+                        </button>
+                    );
+                })}
             </div>
 
             {/* Main content */}

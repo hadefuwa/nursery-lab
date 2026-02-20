@@ -99,7 +99,7 @@ const ObjectCount = () => {
 
                 {/* Level Pips */}
                 <div className="flex gap-2 bg-black/40 p-2 rounded-xl border border-white/5 overflow-x-auto max-w-[200px] md:max-w-md">
-                    {[1, 2, 3, 4, 5, 6].map(lvl => {
+                    {Array.from({ length: 50 }, (_, i) => i + 1).map(lvl => {
                         const unlocked = lvl <= progress.maxLevel;
                         const active = lvl === currentLevel;
                         return (
@@ -116,8 +116,6 @@ const ObjectCount = () => {
                             </button>
                         )
                     })}
-                    {/* Placeholder for infinite levels */}
-                    {progress.maxLevel > 6 && <div className="text-gray-500 px-2">...</div>}
                 </div>
 
                 <div className="text-5xl font-black text-cyan-400 animate-pulse drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">

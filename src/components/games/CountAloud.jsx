@@ -83,15 +83,15 @@ const CountAloud = () => {
                     <div className="text-2xl text-white font-black">LEVEL {currentLevel}</div>
                 </div>
 
-                <div className="flex gap-2 p-2 rounded-xl bg-black/20">
-                    {[1, 2].map(lvl => (
+                <div className="flex gap-2 p-2 rounded-xl bg-black/20 overflow-x-auto max-w-[200px] no-scrollbar">
+                    {Array.from({ length: 50 }, (_, i) => i + 1).map(lvl => (
                         <button
                             key={lvl}
                             disabled={lvl > progress.maxLevel}
                             onClick={() => setCurrentLevel(lvl)}
-                            className={`w-12 h-10 rounded-lg flex items-center justify-center font-bold text-sm ${lvl === currentLevel ? 'bg-pink-500 text-white' : lvl <= progress.maxLevel ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-500'}`}
+                            className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 ${lvl === currentLevel ? 'bg-pink-500 text-white' : lvl <= progress.maxLevel ? 'bg-gray-700 text-white' : 'bg-gray-800 text-gray-500'}`}
                         >
-                            {lvl > progress.maxLevel ? <FaLock size={10} /> : `To ${lvl === 1 ? 10 : 20}`}
+                            {lvl > progress.maxLevel ? <FaLock size={10} /> : lvl}
                         </button>
                     ))}
                 </div>

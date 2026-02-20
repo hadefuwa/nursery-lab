@@ -3,7 +3,7 @@ import { useTTS } from '../../hooks/useTTS';
 import { useProgress } from '../../context/ProgressContext';
 import { FaLock, FaRedo, FaArrowRight, FaBullseye, FaVolumeUp } from 'react-icons/fa';
 
-const TOTAL_LEVELS = 8;
+const TOTAL_LEVELS = 50;
 
 const SHAPES_BY_LEVEL = {
   1: ['circle', 'square'],
@@ -185,7 +185,7 @@ const ShapeHunt = () => {
           <div className="text-sm text-gray-500 font-bold uppercase tracking-widest mt-1">Level {currentLevel}</div>
         </div>
 
-        <div className="flex gap-2 p-2 rounded-xl bg-black/20">
+        <div className="flex gap-2 p-2 rounded-xl bg-black/20 overflow-x-auto max-w-[300px] md:max-w-md no-scrollbar">
           {Array.from({ length: TOTAL_LEVELS }, (_, i) => i + 1).map((lvl) => {
             const unlocked = lvl <= (progress.maxLevel || 1);
             const active = lvl === currentLevel;

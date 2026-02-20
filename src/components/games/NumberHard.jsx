@@ -170,7 +170,7 @@ const NumberHard = () => {
                                 <button onClick={() => { setScore(0); setCompleted(false); generateProblem(currentLevel); }} className="px-6 py-3 bg-gray-700 text-white rounded-xl font-bold flex gap-2 items-center hover:bg-gray-600">
                                     <FaRedo /> Again
                                 </button>
-                                {currentLevel < 5 ? (
+                                {currentLevel < 50 ? (
                                     <button onClick={() => setCurrentLevel(l => l + 1)} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold flex gap-2 items-center hover:bg-blue-500 shadow-lg animate-pulse">
                                         Next Level <FaCheck />
                                     </button>

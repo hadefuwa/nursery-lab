@@ -51,7 +51,8 @@ const BubblePop = () => {
 
         const size = Math.random() * 40 + 60; // 60-100px
         const left = Math.random() * 80 + 10; // 10-90%
-        const speed = Math.random() * 2 + (2 + currentLevel * 0.5); // Speed increases with level
+        const effectiveLevel = Math.min(currentLevel, 10);
+        const speed = Math.random() * 2 + (2 + effectiveLevel * 0.5); // Speed increases with level
 
         const newBubble = {
             id,
@@ -85,7 +86,7 @@ const BubblePop = () => {
 
         // Start Spawner
         if (spawnRef.current) clearInterval(spawnRef.current);
-        spawnRef.current = setInterval(spawnBubble, 1000 - (currentLevel * 50)); // Faster spawn on higher levels
+        spawnRef.current = setInterval(spawnBubble, 1000 - (Math.min(currentLevel, 10) * 50)); // Faster spawn on higher levels
 
         // Cleanup loop (remove bubbles that float off top)
         if (gameLoopRef.current) clearInterval(gameLoopRef.current);

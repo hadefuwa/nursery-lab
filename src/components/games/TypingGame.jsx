@@ -173,7 +173,7 @@ const TypingGame = () => {
                 </div>
 
                 <div className="flex gap-2 p-2 rounded-xl bg-black/20 overflow-x-auto max-w-[300px] no-scrollbar">
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map(lvl => (
+                    {Array.from({ length: 50 }, (_, i) => i + 1).map(lvl => (
                         <button
                             key={lvl}
                             disabled={lvl > progress.maxLevel}

@@ -15,7 +15,8 @@ const ClickingGame = () => {
     }, [currentLevel]);
 
     // Level Config
-    const getLevelConfig = (lvl) => {
+    const getLevelConfig = (rawLvl) => {
+        const lvl = Math.min(rawLvl, 3);
         // Lvl 1: Slow, big bubbles, need 500pts
         // Lvl 2: Faster, smaller bubbles, need 1000pts
         // Lvl 3: Fast, small bubbles, need 1500pts
@@ -43,8 +44,8 @@ const ClickingGame = () => {
                     <div className="text-2xl font-black text-white">LEVEL {currentLevel}</div>
                 </div>
 
-                <div className="flex gap-2">
-                    {[1, 2, 3].map(lvl => (
+                <div className="flex gap-2 overflow-x-auto max-w-[200px] md:max-w-xs no-scrollbar">
+                    {Array.from({ length: 50 }, (_, i) => i + 1).map(lvl => (
                         <button
                             key={lvl}
                             disabled={lvl > progress.maxLevel}

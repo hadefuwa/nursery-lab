@@ -41,7 +41,7 @@ export const GAMES = [
         color: 'from-pink-500 to-rose-600',
         shadow: 'shadow-rose-500/40',
         textColor: 'text-pink-500',
-        totalLevels: 2
+        totalLevels: 50
     },
     {
         id: 'object-count',
@@ -51,7 +51,7 @@ export const GAMES = [
         color: 'from-green-400 to-emerald-600',
         shadow: 'shadow-emerald-500/40',
         textColor: 'text-green-500',
-        totalLevels: 6
+        totalLevels: 50
     },
     {
         id: 'math-game',
@@ -61,7 +61,7 @@ export const GAMES = [
         color: 'from-orange-400 to-amber-600',
         shadow: 'shadow-amber-500/40',
         textColor: 'text-orange-500',
-        totalLevels: 15
+        totalLevels: 50
     },
     {
         id: 'symbol-recog',
@@ -71,7 +71,7 @@ export const GAMES = [
         color: 'from-blue-400 to-indigo-600',
         shadow: 'shadow-indigo-500/40',
         textColor: 'text-blue-500',
-        totalLevels: 8
+        totalLevels: 50
     },
     {
         id: 'typing-game',
@@ -81,7 +81,7 @@ export const GAMES = [
         color: 'from-purple-400 to-violet-600',
         shadow: 'shadow-violet-500/40',
         textColor: 'text-purple-500',
-        totalLevels: 8
+        totalLevels: 50
     },
     {
         id: 'clicking-game',
@@ -91,7 +91,7 @@ export const GAMES = [
         color: 'from-red-400 to-red-600',
         shadow: 'shadow-red-500/40',
         textColor: 'text-red-500',
-        totalLevels: 3
+        totalLevels: 50
     },
     {
         id: 'sorting-game',
@@ -101,7 +101,7 @@ export const GAMES = [
         color: 'from-cyan-400 to-cyan-600',
         shadow: 'shadow-cyan-500/40',
         textColor: 'text-cyan-500',
-        totalLevels: 6
+        totalLevels: 50
     },
     {
         id: 'drawing-game',
@@ -121,7 +121,7 @@ export const GAMES = [
         color: 'from-blue-600 to-indigo-800',
         shadow: 'shadow-indigo-500/40',
         textColor: 'text-indigo-500',
-        totalLevels: 8
+        totalLevels: 50
     },
     {
         id: 'bubble-pop',
@@ -131,7 +131,7 @@ export const GAMES = [
         color: 'from-cyan-500 to-blue-500',
         shadow: 'shadow-blue-400/40',
         textColor: 'text-blue-500',
-        totalLevels: 10 // Added missing totalLevels
+        totalLevels: 50 // Added missing totalLevels
     },
     {
         id: 'letter-match',
@@ -141,7 +141,7 @@ export const GAMES = [
         color: 'from-violet-500 to-purple-600',
         shadow: 'shadow-purple-500/40',
         textColor: 'text-purple-500',
-        totalLevels: 6
+        totalLevels: 50
     },
     {
         id: 'word-start',
@@ -151,7 +151,7 @@ export const GAMES = [
         color: 'from-emerald-500 to-teal-600',
         shadow: 'shadow-teal-500/40',
         textColor: 'text-emerald-500',
-        totalLevels: 9
+        totalLevels: 50
     },
     {
         id: 'letter-order',
@@ -161,7 +161,7 @@ export const GAMES = [
         color: 'from-sky-500 to-blue-600',
         shadow: 'shadow-blue-500/40',
         textColor: 'text-sky-500',
-        totalLevels: 9
+        totalLevels: 50
     },
     {
         id: 'alphabet-game',
@@ -171,7 +171,7 @@ export const GAMES = [
         color: 'from-yellow-400 to-orange-500',
         shadow: 'shadow-orange-500/40',
         textColor: 'text-yellow-500',
-        totalLevels: 6
+        totalLevels: 50
     },
     {
         id: 'alphabet-hard',
@@ -181,7 +181,7 @@ export const GAMES = [
         color: 'from-red-500 to-orange-600',
         shadow: 'shadow-red-500/40',
         textColor: 'text-red-500',
-        totalLevels: 6
+        totalLevels: 50
     },
     {
         id: 'missing-letter',
@@ -191,7 +191,7 @@ export const GAMES = [
         color: 'from-blue-400 to-cyan-500',
         shadow: 'shadow-cyan-500/40',
         textColor: 'text-cyan-500',
-        totalLevels: 7
+        totalLevels: 50
     },
     {
         id: 'alphabet-abcdef',
@@ -201,7 +201,7 @@ export const GAMES = [
         color: 'from-green-400 to-emerald-600',
         shadow: 'shadow-emerald-500/40',
         textColor: 'text-green-500',
-        totalLevels: 6
+        totalLevels: 50
     },
     {
         id: 'alphabet-ghijkl',
@@ -211,7 +211,7 @@ export const GAMES = [
         color: 'from-teal-400 to-green-600',
         shadow: 'shadow-teal-500/40',
         textColor: 'text-teal-500',
-        totalLevels: 6
+        totalLevels: 50
     },
     {
         id: 'alphabet-mnopqr',
@@ -221,7 +221,7 @@ export const GAMES = [
         color: 'from-indigo-400 to-blue-600',
         shadow: 'shadow-blue-500/40',
         textColor: 'text-blue-500',
-        totalLevels: 6
+        totalLevels: 50
     },
     {
         id: 'alphabet-stuvwxyz',
@@ -231,7 +231,7 @@ export const GAMES = [
         color: 'from-purple-400 to-fuchsia-600',
         shadow: 'shadow-purple-500/40',
         textColor: 'text-purple-500',
-        totalLevels: 8    },
+        totalLevels: 50    },
     {
         id: 'pacman-letter',
         label: 'Pacman Letters',
@@ -240,7 +240,7 @@ export const GAMES = [
         color: 'from-yellow-400 to-orange-500',
         shadow: 'shadow-yellow-500/40',
         textColor: 'text-yellow-500',
-        totalLevels: 10
+        totalLevels: 50
     },
     {
         id: 'pacman-number',
@@ -250,7 +250,7 @@ export const GAMES = [
         color: 'from-blue-400 to-cyan-500',
         shadow: 'shadow-cyan-500/40',
         textColor: 'text-blue-500',
-        totalLevels: 10
+        totalLevels: 50
 
     }
 ];

@@ -47,7 +47,7 @@ const MissingLetter = () => {
     const [currentWord, setCurrentWord] = useState(null);
 
     const QUESTIONS_PER_LEVEL = 5;
-    const TOTAL_LEVELS = Math.ceil(WORDS.length / QUESTIONS_PER_LEVEL);
+    const TOTAL_LEVELS = 50;
 
     useEffect(() => {
         saveLevel('missing-letter', currentLevel + 1);
@@ -58,7 +58,8 @@ const MissingLetter = () => {
     }, [currentLevel]);
 
     const generateQuestion = () => {
-        const startIdx = currentLevel * QUESTIONS_PER_LEVEL;
+        const levelGroupIndex = currentLevel % Math.ceil(WORDS.length / QUESTIONS_PER_LEVEL);
+        const startIdx = levelGroupIndex * QUESTIONS_PER_LEVEL;
         const levelWords = WORDS.slice(startIdx, startIdx + QUESTIONS_PER_LEVEL);
         const randomWord = levelWords[Math.floor(Math.random() * levelWords.length)];
         setCurrentWord(randomWord);
@@ -154,7 +155,7 @@ const MissingLetter = () => {
 
                         {/* Hint */}
                         <div className="flex items-center gap-2 text-xl text-white/75 mb-8">
-                            <button 
+                            <button
                                 onClick={() => speak(currentWord.hint)}
                                 className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center gap-2 transition-colors"
                             >
@@ -175,8 +176,8 @@ const MissingLetter = () => {
                                         ${feedback === 'correct' && letter === currentWord.answer
                                             ? 'bg-green-500 text-white shadow-[0_0_30px_rgba(34,197,94,0.6)] scale-110'
                                             : feedback === 'incorrect' && letter === currentWord.answer
-                                            ? 'bg-red-500 text-white'
-                                            : 'bg-gray-800 text-blue-100 border-2 border-blue-500/20 hover:border-blue-400 hover:bg-gray-700 hover:scale-105 active:scale-95'
+                                                ? 'bg-red-500 text-white'
+                                                : 'bg-gray-800 text-blue-100 border-2 border-blue-500/20 hover:border-blue-400 hover:bg-gray-700 hover:scale-105 active:scale-95'
                                         }
                                     `}
                                 >
@@ -197,21 +198,21 @@ const MissingLetter = () => {
                             You found all {QUESTIONS_PER_LEVEL} missing letters!
                         </p>
                         <div className="flex gap-6">
-                            <button 
+                            <button
                                 onClick={restartLevel}
                                 className="px-8 py-4 bg-gray-700 hover:bg-gray-600 rounded-2xl text-white font-bold flex items-center gap-2"
                             >
                                 <FaRedo /> Replay
                             </button>
                             {currentLevel < TOTAL_LEVELS - 1 ? (
-                                <button 
+                                <button
                                     onClick={nextLevel}
                                     className="px-8 py-4 bg-green-600 hover:bg-green-500 rounded-2xl text-white font-bold flex items-center gap-2 shadow-lg animate-pulse"
                                 >
                                     Next Level <FaArrowRight />
                                 </button>
                             ) : (
-                                <button 
+                                <button
                                     onClick={() => navigate('/alphabet')}
                                     className="px-8 py-4 bg-yellow-500 hover:bg-yellow-400 rounded-2xl text-white font-bold shadow-lg flex items-center gap-2 hover:scale-105 transition-transform"
                                 >
