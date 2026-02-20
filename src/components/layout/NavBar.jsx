@@ -17,7 +17,7 @@ const NavBar = () => {
             .reduce((sum, g) => {
                 const stats = progress?.[g.id];
                 const maxLevel = stats?.maxLevel || 1;
-                return sum + Math.min(g.totalLevels, Math.max(0, maxLevel));
+                return sum + Math.min(g.totalLevels, Math.max(0, maxLevel - 1));
             }, 0);
     }, [progress]);
 

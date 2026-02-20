@@ -264,12 +264,12 @@ export const getGameById = (id) => {
 export const isGameCompleted = (gameId, maxLevel) => {
     const game = getGameById(gameId);
     if (!game || !game.totalLevels) return false;
-    return maxLevel >= game.totalLevels;
+    return (maxLevel - 1) >= game.totalLevels;
 };
 
 // Helper function to get completion percentage
 export const getCompletionPercentage = (gameId, maxLevel) => {
     const game = getGameById(gameId);
     if (!game || !game.totalLevels) return 0;
-    return Math.min(100, Math.round((maxLevel / game.totalLevels) * 100));
+    return Math.min(100, Math.max(0, Math.round(((maxLevel - 1) / game.totalLevels) * 100)));
 };
