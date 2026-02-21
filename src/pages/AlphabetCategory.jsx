@@ -77,6 +77,16 @@ const AlphabetCategory = () => {
             shadow: 'shadow-red-500/40',
             totalLevels: 6,
             description: 'Type the letters!'
+        },
+        {
+            id: 'falling-letters',
+            label: 'Falling Letters',
+            emoji: '🍂',
+            route: '/lesson/falling-letters',
+            color: 'from-emerald-400 to-teal-600',
+            shadow: 'shadow-emerald-500/40',
+            totalLevels: 50,
+            description: 'Catch the falling letters!'
         }
     ];
 
@@ -103,8 +113,8 @@ const AlphabetCategory = () => {
                 <p className="text-xl text-yellow-200/70 font-bold tracking-widest uppercase mb-6">
                     Choose your letter practice
                 </p>
-                <Link 
-                    to="/" 
+                <Link
+                    to="/"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-bold transition-all hover:scale-105"
                 >
                     <FaArrowLeft /> Back to Home
@@ -122,7 +132,7 @@ const AlphabetCategory = () => {
                     const currentLevel = stats?.level || 1;
                     const maxLevel = stats?.maxLevel || 1;
                     const isCompleted = lesson.totalLevels && maxLevel >= lesson.totalLevels;
-                    const completionPercent = lesson.totalLevels 
+                    const completionPercent = lesson.totalLevels
                         ? Math.min(100, Math.round((maxLevel / lesson.totalLevels) * 100))
                         : 0;
 

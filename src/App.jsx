@@ -33,6 +33,7 @@ import PacmanNumber from './components/games/PacmanNumber';
 import ShapeHunt from './components/games/ShapeHunt';
 import ColorHunt from './components/games/ColorHunt';
 import PatternRepeat from './components/games/PatternRepeat';
+import FallingLetters from './components/games/FallingLetters';
 
 // Page Transition Wrapper
 const PageTransition = ({ children }) => (
@@ -85,6 +86,7 @@ const AnimatedRoutes = () => {
         <Route path="/lesson/shape-hunt" element={<PageTransition><ShapeHunt /></PageTransition>} />
         <Route path="/lesson/color-hunt" element={<PageTransition><ColorHunt /></PageTransition>} />
         <Route path="/lesson/pattern-repeat" element={<PageTransition><PatternRepeat /></PageTransition>} />
+        <Route path="/lesson/falling-letters" element={<PageTransition><FallingLetters /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );

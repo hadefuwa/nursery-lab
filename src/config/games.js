@@ -252,6 +252,16 @@ export const GAMES = [
         textColor: 'text-blue-500',
         totalLevels: 50
 
+    },
+    {
+        id: 'falling-letters',
+        label: 'Falling Letters',
+        emoji: '🍂',
+        route: '/lesson/falling-letters',
+        color: 'from-emerald-400 to-teal-600',
+        shadow: 'shadow-emerald-500/40',
+        textColor: 'text-emerald-500',
+        totalLevels: 50
     }
 ];
 
