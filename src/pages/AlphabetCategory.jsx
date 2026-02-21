@@ -87,6 +87,16 @@ const AlphabetCategory = () => {
             shadow: 'shadow-emerald-500/40',
             totalLevels: 50,
             description: 'Catch the falling letters!'
+        },
+        {
+            id: 'phonics',
+            label: 'Phonics Fun',
+            emoji: '🗣️',
+            route: '/lesson/phonics',
+            color: 'from-emerald-500 to-teal-400',
+            shadow: 'shadow-emerald-500/40',
+            totalLevels: 50,
+            description: 'Match sounds to letters'
         }
     ];
 

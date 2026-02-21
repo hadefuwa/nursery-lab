@@ -17,6 +17,36 @@ const MemoryCategory = () => {
       shadow: 'shadow-teal-500/40',
       totalLevels: 6,
       description: 'Watch the pattern, then repeat it'
+    },
+    {
+      id: 'animal-sounds',
+      label: 'Animal Sounds',
+      emoji: '🐾',
+      route: '/lesson/animal-sounds',
+      color: 'from-amber-500 to-orange-600',
+      shadow: 'shadow-orange-500/40',
+      totalLevels: 50,
+      description: 'Which animal says that?'
+    },
+    {
+      id: 'memory-match',
+      label: 'Memory Match',
+      emoji: '🎴',
+      route: '/lesson/memory-match',
+      color: 'from-blue-500 to-indigo-600',
+      shadow: 'shadow-indigo-500/40',
+      totalLevels: 50,
+      description: 'Find the matching pairs!'
+    },
+    {
+      id: 'rhythm-maker',
+      label: 'Rhythm Maker',
+      emoji: '🎵',
+      route: '/lesson/rhythm-maker',
+      color: 'from-fuchsia-500 to-pink-600',
+      shadow: 'shadow-pink-500/40',
+      totalLevels: 50,
+      description: 'Repeat the musical pattern'
     }
   ];
 

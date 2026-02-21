@@ -262,6 +262,56 @@ export const GAMES = [
         shadow: 'shadow-emerald-500/40',
         textColor: 'text-emerald-500',
         totalLevels: 50
+    },
+    {
+        id: 'animal-sounds',
+        label: 'Animal Sounds',
+        emoji: '🐾',
+        route: '/lesson/animal-sounds',
+        color: 'from-amber-500 to-orange-600',
+        shadow: 'shadow-orange-500/40',
+        textColor: 'text-amber-500',
+        totalLevels: 50
+    },
+    {
+        id: 'size-sorting',
+        label: 'Size Sorting',
+        emoji: '📏',
+        route: '/lesson/size-sorting',
+        color: 'from-indigo-500 to-violet-600',
+        shadow: 'shadow-violet-500/40',
+        textColor: 'text-indigo-500',
+        totalLevels: 50
+    },
+    {
+        id: 'memory-match',
+        label: 'Memory Match',
+        emoji: '🎴',
+        route: '/lesson/memory-match',
+        color: 'from-blue-500 to-indigo-600',
+        shadow: 'shadow-indigo-500/40',
+        textColor: 'text-blue-500',
+        totalLevels: 50
+    },
+    {
+        id: 'rhythm-maker',
+        label: 'Rhythm Maker',
+        emoji: '🎵',
+        route: '/lesson/rhythm-maker',
+        color: 'from-fuchsia-500 to-pink-600',
+        shadow: 'shadow-pink-500/40',
+        textColor: 'text-fuchsia-500',
+        totalLevels: 50
+    },
+    {
+        id: 'phonics',
+        label: 'Phonics Fun',
+        emoji: '🗣️',
+        route: '/lesson/phonics',
+        color: 'from-emerald-500 to-teal-400',
+        shadow: 'shadow-emerald-500/40',
+        textColor: 'text-emerald-500',
+        totalLevels: 50
     }
 ];
 

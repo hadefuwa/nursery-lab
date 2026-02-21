@@ -34,6 +34,11 @@ import ShapeHunt from './components/games/ShapeHunt';
 import ColorHunt from './components/games/ColorHunt';
 import PatternRepeat from './components/games/PatternRepeat';
 import FallingLetters from './components/games/FallingLetters';
+import AnimalSounds from './components/games/AnimalSounds';
+import SizeSorting from './components/games/SizeSorting';
+import MemoryMatch from './components/games/MemoryMatch';
+import RhythmMaker from './components/games/RhythmMaker';
+import PhonicsGame from './components/games/PhonicsGame';
 
 // Page Transition Wrapper
 const PageTransition = ({ children }) => (
@@ -87,6 +92,11 @@ const AnimatedRoutes = () => {
         <Route path="/lesson/color-hunt" element={<PageTransition><ColorHunt /></PageTransition>} />
         <Route path="/lesson/pattern-repeat" element={<PageTransition><PatternRepeat /></PageTransition>} />
         <Route path="/lesson/falling-letters" element={<PageTransition><FallingLetters /></PageTransition>} />
+        <Route path="/lesson/animal-sounds" element={<PageTransition><AnimalSounds /></PageTransition>} />
+        <Route path="/lesson/size-sorting" element={<PageTransition><SizeSorting /></PageTransition>} />
+        <Route path="/lesson/memory-match" element={<PageTransition><MemoryMatch /></PageTransition>} />
+        <Route path="/lesson/rhythm-maker" element={<PageTransition><RhythmMaker /></PageTransition>} />
+        <Route path="/lesson/phonics" element={<PageTransition><PhonicsGame /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );

@@ -27,6 +27,16 @@ const ShapesCategory = () => {
       shadow: 'shadow-pink-500/40',
       totalLevels: 8,
       description: 'Tap the target color fast'
+    },
+    {
+      id: 'size-sorting',
+      label: 'Size Sorting',
+      emoji: '📏',
+      route: '/lesson/size-sorting',
+      color: 'from-indigo-500 to-violet-600',
+      shadow: 'shadow-violet-500/40',
+      totalLevels: 50,
+      description: 'Find big, medium, and small'
     }
   ];
 
