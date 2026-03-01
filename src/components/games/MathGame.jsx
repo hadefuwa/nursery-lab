@@ -225,8 +225,8 @@ const MathGame = () => {
             {/* Question Area */}
             <div className="flex-1 w-full max-w-4xl flex flex-col items-center justify-center card-neon p-8 relative">
 
-                {/* Visual Representation (only small numbers) */}
-                {problem.a <= 10 && (
+                {/* Visual Representation (only for the first 5 intro levels) */}
+                {currentLevel <= 5 && problem.a <= 10 && (
                     <div className="flex items-center gap-6 mb-8 bg-gradient-to-br from-purple-900/40 to-blue-900/40 p-8 rounded-3xl border-2 border-cyan-500/30 min-h-[140px] justify-center w-full shadow-[0_0_30px_rgba(6,182,212,0.2)]">
                         {problem.op === '+' ? (
                             <>
@@ -247,7 +247,7 @@ const MathGame = () => {
                 )}
 
                 {/* Story Text */}
-                {problem.a <= 10 && (
+                {currentLevel <= 5 && problem.a <= 10 && (
                     <div className="text-xl md:text-2xl text-center font-bold text-yellow-300 mb-6 px-4">
                         {problem.op === '+' ? (
                             <span>How many {problem.emojiName}s altogether? 🤔</span>
