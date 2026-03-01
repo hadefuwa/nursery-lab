@@ -55,23 +55,21 @@ const MathGame = () => {
     ];
 
     const getLevelConfig = (lvl) => {
-        if (lvl === 1) return { op: '+', min: 1, max: 3, fixed: 1 }; // Add 1 to 1-3
-        if (lvl === 2) return { op: '-', min: 2, max: 4, fixed: 1 }; // Subtract 1 from 2-4
-        if (lvl === 3) return { op: '+', min: 1, max: 3, fixed: 2 }; // Add 2 to 1-3
-        if (lvl === 4) return { op: '-', min: 3, max: 5, fixed: 2 }; // Subtract 2 from 3-5
-        if (lvl === 5) return { op: '+', min: 1, max: 4, range: 5 }; // Addition within 5
-        if (lvl === 6) return { op: '-', min: 3, max: 5, range: 5 }; // Subtraction within 5
-        if (lvl === 7) return { op: '+', min: 2, max: 5, range: 6 }; // Addition within 6
-        if (lvl === 8) return { op: '-', min: 4, max: 6, range: 6 }; // Subtraction within 6
-        if (lvl === 9) return { op: '+', min: 2, max: 6, range: 8 }; // Addition within 8
-        if (lvl === 10) return { op: '-', min: 4, max: 8, range: 8 }; // Subtraction within 8
-        if (lvl === 11) return { op: '+', min: 3, max: 8, range: 10 }; // Addition within 10
-        if (lvl === 12) return { op: '-', min: 5, max: 10, range: 10 }; // Subtraction within 10
-        if (lvl === 13) return { op: 'mixed', min: 3, max: 10, range: 10 }; // Mixed within 10
-        if (lvl === 14) return { op: '+', min: 5, max: 12, range: 15 }; // Addition within 15
-        if (lvl >= 15) return { op: 'mixed', min: 5, max: 15, range: 15 }; // Mixed within 15
+        // Lots of practice for adding up to 5
+        if (lvl <= 2) return { op: '+', min: 1, max: 2, fixed: 1 }; // 1+1, 2+1
+        if (lvl <= 4) return { op: '+', min: 1, max: 3, fixed: 1 }; // 1+1, 2+1, 3+1
+        if (lvl <= 6) return { op: '+', min: 1, max: 2, fixed: 2 }; // 1+2, 2+2
+        if (lvl <= 8) return { op: '+', min: 1, max: 3, fixed: 2 }; // 1+2, 2+2, 3+2
+        if (lvl <= 11) return { op: '+', min: 1, max: 2, fixed: 3 }; // 1+3, 2+3
+        if (lvl <= 15) return { op: '+', min: 1, max: 4, range: 5 }; // Addition within 5 (randomized)
+        if (lvl <= 20) return { op: '+', min: 1, max: 5, range: 6 }; // Addition within 6
+        if (lvl <= 25) return { op: '+', min: 1, max: 7, range: 8 }; // Addition within 8
+        if (lvl <= 30) return { op: '+', min: 1, max: 9, range: 10 }; // Addition within 10
+        if (lvl <= 35) return { op: '-', min: 2, max: 5, range: 5 }; // Subtraction within 5
+        if (lvl <= 40) return { op: '-', min: 2, max: 10, range: 10 }; // Subtraction within 10
+        if (lvl <= 45) return { op: 'mixed', min: 1, max: 10, range: 10 }; // Mixed within 10
 
-        return { op: '+', min: 1, max: 3, fixed: 1 };
+        return { op: 'mixed', min: 1, max: 15, range: 15 };
     };
 
     const generateProblem = (lvl) => {
@@ -109,7 +107,7 @@ const MathGame = () => {
         // Generate answer options
         const opts = new Set([ans]);
         const optionRange = Math.max(6, ans + 3);
-        while (opts.size < 3) {
+        while (opts.size < 4) {
             let r = Math.max(0, ans - 2 + Math.floor(Math.random() * 5));
             if (r !== ans && r <= optionRange) opts.add(r);
         }
@@ -131,6 +129,8 @@ const MathGame = () => {
     }, [currentLevel]);
 
     const handleAnswer = (val) => {
+        if (feedback !== null) return; // Prevent multiple concurrent answer clicks
+
         if (val === problem.ans) {
             setFeedback('correct');
 
@@ -149,8 +149,8 @@ const MathGame = () => {
 
             speak(correctPhrases[Math.floor(Math.random() * correctPhrases.length)]);
 
-            if (consecutiveWins + 1 >= 3) {
-                // Unlock next level after 3 correct answers
+            if (consecutiveWins + 1 >= 5) {
+                // Unlock next level after 5 correct answers for more practice
                 setTimeout(() => {
                     speak("Amazing! You completed the level! Let's try something new!");
                     unlockLevel('math-game', currentLevel + 1);
@@ -163,8 +163,13 @@ const MathGame = () => {
             }
         } else {
             setFeedback('wrong');
-            speak("Oops! Let's count together and try again!");
-            setConsecutiveWins(0); // Reset streak on error
+            speak("Oops! Let's try again!");
+            setConsecutiveWins(0); // Reset streak on error to prevent random guessing from passing
+
+            // Allow trying again after a short delay
+            setTimeout(() => {
+                setFeedback(null);
+            }, 2000);
         }
     };
 
@@ -174,8 +179,8 @@ const MathGame = () => {
 
         return Array.from({ length: count }).map((_, i) => (
             <div key={i} className={`relative text-5xl md:text-6xl transition-all duration-500 ${isSubtraction && i >= count - crossedOut
-                    ? 'opacity-20 grayscale blur-sm scale-75'
-                    : 'drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+                ? 'opacity-20 grayscale blur-sm scale-75'
+                : 'drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]'
                 }`}>
                 <span>{emoji}</span>
                 {isSubtraction && i >= count - crossedOut && (
@@ -192,7 +197,7 @@ const MathGame = () => {
                 <div className="flex flex-col">
                     <h2 className="text-purple-300 font-bold uppercase tracking-widest text-sm">🧮 Math Fun!</h2>
                     <div className="text-4xl font-black text-white drop-shadow-lg">Level {currentLevel}</div>
-                    <div className="text-sm text-yellow-300 font-bold mt-1">⭐ Progress: {consecutiveWins}/3</div>
+                    <div className="text-sm text-yellow-300 font-bold mt-1">⭐ Progress: {consecutiveWins}/5</div>
                 </div>
 
                 {/* Level Pips */}
@@ -262,12 +267,13 @@ const MathGame = () => {
                 </div>
 
                 {/* Options */}
-                <div className="grid grid-cols-3 gap-6 w-full max-w-2xl z-10">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-2xl z-10">
                     {options.map((opt, idx) => {
                         const colors = [
                             'from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 border-blue-400',
                             'from-purple-500 to-purple-600 hover:from-purple-400 hover:to-purple-500 border-purple-400',
-                            'from-pink-500 to-pink-600 hover:from-pink-400 hover:to-pink-500 border-pink-400'
+                            'from-pink-500 to-pink-600 hover:from-pink-400 hover:to-pink-500 border-pink-400',
+                            'from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 border-orange-400'
                         ];
                         return (
                             <button
@@ -277,9 +283,9 @@ const MathGame = () => {
                                 className={`
                                 text-6xl md:text-7xl font-black py-10 px-6 rounded-3xl transition-all duration-300 transform
                                 ${feedback === 'correct' && opt === problem.ans
-                                        ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-[0_0_50px_rgba(34,197,94,0.8)] scale-110 border-4 border-green-300 animate-pulse'
+                                        ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-[0_0_50px_rgba(34,197,94,0.8)] scale-110 border-4 border-green-300 animate-pulse z-20'
                                         : feedback === null
-                                            ? `bg-gradient-to-br ${colors[idx % 3]} text-white border-4 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-105 hover:-translate-y-1 active:scale-95`
+                                            ? `bg-gradient-to-br ${colors[idx % colors.length]} text-white border-4 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-105 hover:-translate-y-1 active:scale-95`
                                             : 'bg-gradient-to-br from-gray-700 to-gray-800 text-white border-2 border-gray-600'
                                     }
                                 ${feedback === 'wrong' && opt !== problem.ans ? 'opacity-30 scale-90 grayscale' : ''}
