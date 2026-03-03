@@ -56,20 +56,15 @@ const MathGame = () => {
 
     const getLevelConfig = (lvl) => {
         // Lots of practice for adding up to 5
-        if (lvl <= 2) return { op: '+', min: 1, max: 2, fixed: 1 }; // 1+1, 2+1
-        if (lvl <= 4) return { op: '+', min: 1, max: 3, fixed: 1 }; // 1+1, 2+1, 3+1
-        if (lvl <= 6) return { op: '+', min: 1, max: 2, fixed: 2 }; // 1+2, 2+2
-        if (lvl <= 8) return { op: '+', min: 1, max: 3, fixed: 2 }; // 1+2, 2+2, 3+2
-        if (lvl <= 11) return { op: '+', min: 1, max: 2, fixed: 3 }; // 1+3, 2+3
-        if (lvl <= 15) return { op: '+', min: 1, max: 4, range: 5 }; // Addition within 5 (randomized)
-        if (lvl <= 20) return { op: '+', min: 1, max: 5, range: 6 }; // Addition within 6
-        if (lvl <= 25) return { op: '+', min: 1, max: 7, range: 8 }; // Addition within 8
-        if (lvl <= 30) return { op: '+', min: 1, max: 9, range: 10 }; // Addition within 10
-        if (lvl <= 35) return { op: '-', min: 2, max: 5, range: 5 }; // Subtraction within 5
-        if (lvl <= 40) return { op: '-', min: 2, max: 10, range: 10 }; // Subtraction within 10
-        if (lvl <= 45) return { op: 'mixed', min: 1, max: 10, range: 10 }; // Mixed within 10
+        if (lvl <= 15) return { op: '+', min: 0, range: 5 }; // Addition within 5 (randomized)
+        if (lvl <= 20) return { op: '+', min: 0, range: 6 }; // Addition within 6
+        if (lvl <= 25) return { op: '+', min: 0, range: 8 }; // Addition within 8
+        if (lvl <= 30) return { op: '+', min: 0, range: 10 }; // Addition within 10
+        if (lvl <= 35) return { op: '-', min: 0, range: 5 }; // Subtraction within 5
+        if (lvl <= 40) return { op: '-', min: 0, range: 10 }; // Subtraction within 10
+        if (lvl <= 45) return { op: 'mixed', min: 0, range: 10 }; // Mixed within 10
 
-        return { op: 'mixed', min: 1, max: 15, range: 15 };
+        return { op: 'mixed', min: 0, range: 15 };
     };
 
     const generateProblem = (lvl) => {
@@ -82,24 +77,15 @@ const MathGame = () => {
             operation = Math.random() > 0.5 ? '+' : '-';
         }
 
-        if (config.fixed !== undefined) {
-            // Fixed second number (e.g., always add 1, or subtract 1)
-            b = config.fixed;
-            a = config.min + Math.floor(Math.random() * (config.max - config.min + 1));
-            if (operation === '-' && a <= b) a = b + 1; // Ensure positive result
-            ans = operation === '+' ? a + b : a - b;
+        if (operation === '+') {
+            a = config.min + Math.floor(Math.random() * (config.range - config.min + 1));
+            const maxB = config.range - a;
+            b = config.min + Math.floor(Math.random() * (maxB - config.min + 1));
+            ans = a + b;
         } else {
-            // Variable problems within range
-            if (operation === '+') {
-                a = config.min + Math.floor(Math.random() * (config.max - config.min + 1));
-                const maxB = Math.min(config.range - a, config.max);
-                b = 1 + Math.floor(Math.random() * maxB);
-                ans = a + b;
-            } else {
-                a = config.min + Math.floor(Math.random() * (config.max - config.min + 1));
-                b = 1 + Math.floor(Math.random() * Math.min(a - 1, 3)); // Keep subtraction simple
-                ans = a - b;
-            }
+            a = config.min + Math.floor(Math.random() * (config.range - config.min + 1));
+            b = config.min + Math.floor(Math.random() * (a - config.min + 1));
+            ans = a - b;
         }
 
         setProblem({ a, b, ans, op: operation, emoji: emojiSet.emoji, emojiName: emojiSet.name });
@@ -117,9 +103,9 @@ const MathGame = () => {
         // Speak intro with story
         setTimeout(() => {
             if (operation === '+') {
-                speak(`You have ${a} ${emojiSet.name}${a > 1 ? 's' : ''}, and ${b} more ${emojiSet.name}${b > 1 ? 's' : ''} join! How many ${emojiSet.name}s now?`);
+                speak(`You have ${a} ${emojiSet.name}${a !== 1 ? 's' : ''}, and ${b} more ${emojiSet.name}${b !== 1 ? 's' : ''} join! How many ${emojiSet.name}s now?`);
             } else {
-                speak(`You have ${a} ${emojiSet.name}${a > 1 ? 's' : ''}, and ${b} ${emojiSet.name}${b > 1 ? 's' : ''} leave! How many ${emojiSet.name}s are left?`);
+                speak(`You have ${a} ${emojiSet.name}${a !== 1 ? 's' : ''}, and ${b} ${emojiSet.name}${b !== 1 ? 's' : ''} leave! How many ${emojiSet.name}s are left?`);
             }
         }, 500);
     };
