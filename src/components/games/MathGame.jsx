@@ -30,7 +30,7 @@ const MathGame = () => {
         saveLevel('math-game', currentLevel);
     }, [currentLevel]);
 
-    const [problem, setProblem] = useState({ a: 1, b: 1, ans: 2, op: '+', emoji: '🐢' });
+    const [problem, setProblem] = useState({ a: 1, b: 1, ans: 2, op: '+', emoji: '🐢', emojiName: 'turtle', format: 'normal', targetAns: 2 });
     const [options, setOptions] = useState([]);
     const [feedback, setFeedback] = useState(null);
     const [consecutiveWins, setConsecutiveWins] = useState(0);
@@ -55,21 +55,25 @@ const MathGame = () => {
     ];
 
     const getLevelConfig = (lvl) => {
-        // Lots of practice for adding up to 5
-        if (lvl <= 15) return { op: '+', min: 0, range: 5 }; // Addition within 5 (randomized)
-        if (lvl <= 20) return { op: '+', min: 0, range: 6 }; // Addition within 6
-        if (lvl <= 25) return { op: '+', min: 0, range: 8 }; // Addition within 8
-        if (lvl <= 30) return { op: '+', min: 0, range: 10 }; // Addition within 10
-        if (lvl <= 35) return { op: '-', min: 0, range: 5 }; // Subtraction within 5
-        if (lvl <= 40) return { op: '-', min: 0, range: 10 }; // Subtraction within 10
-        if (lvl <= 45) return { op: 'mixed', min: 0, range: 10 }; // Mixed within 10
+        let op = '+', range = 5, pFormat = 'normal';
 
-        return { op: 'mixed', min: 0, range: 15 };
+        if (lvl <= 5) { op = '+'; range = 5; } // Simple addition up to 5
+        else if (lvl <= 10) { op = '-'; range = 5; } // Subtraction up to 5
+        else if (lvl <= 15) { op = '+'; range = 8; }
+        else if (lvl <= 20) { op = '-'; range = 8; }
+        else if (lvl <= 23) { op = '+'; range = 6; pFormat = 'missingB'; } // A + ? = C
+        else if (lvl <= 26) { op = '+'; range = 6; pFormat = 'missingA'; } // ? + B = C
+        else if (lvl <= 30) { op = '+'; range = 10; }
+        else if (lvl <= 35) { op = '-'; range = 10; pFormat = 'missingB'; } // A - ? = C
+        else if (lvl <= 40) { op = 'mixed'; range = 10; }
+        else { op = 'mixed'; range = 15; pFormat = Math.random() > 0.6 ? 'missingB' : 'normal'; }
+
+        return { op, min: 0, range, pFormat };
     };
 
     const generateProblem = (lvl) => {
         const config = getLevelConfig(lvl);
-        const emojiSet = emojiSets[(lvl - 1) % emojiSets.length];
+        const emojiSet = emojiSets[Math.floor(Math.random() * emojiSets.length)];
         let a, b, ans;
 
         let operation = config.op;
@@ -88,24 +92,40 @@ const MathGame = () => {
             ans = a - b;
         }
 
-        setProblem({ a, b, ans, op: operation, emoji: emojiSet.emoji, emojiName: emojiSet.name });
+        let format = config.pFormat;
+        let targetAns;
+        if (format === 'normal') targetAns = operation === '+' ? ans : ans;
+        else if (format === 'missingA') targetAns = a;
+        else if (format === 'missingB') targetAns = b;
+
+        setProblem({ a, b, ans, op: operation, emoji: emojiSet.emoji, emojiName: emojiSet.name, format, targetAns });
 
         // Generate answer options
-        const opts = new Set([ans]);
-        const optionRange = Math.max(6, ans + 3);
+        const opts = new Set([targetAns]);
+        const optionRange = Math.max(6, targetAns + 3);
         while (opts.size < 4) {
-            let r = Math.max(0, ans - 2 + Math.floor(Math.random() * 5));
-            if (r !== ans && r <= optionRange) opts.add(r);
+            let r = Math.max(0, targetAns - 2 + Math.floor(Math.random() * 5));
+            if (r !== targetAns && r <= optionRange) opts.add(r);
         }
         setOptions(Array.from(opts).sort(() => Math.random() - 0.5));
         setFeedback(null);
 
-        // Speak intro with story
+        // Speak intro with story variety
         setTimeout(() => {
             if (operation === '+') {
-                speak(`You have ${a} ${emojiSet.name}${a !== 1 ? 's' : ''}, and ${b} more ${emojiSet.name}${b !== 1 ? 's' : ''} join! How many ${emojiSet.name}s now?`);
+                if (format === 'normal') {
+                    speak(`You have ${a} ${emojiSet.name}${a !== 1 ? 's' : ''}, and ${b} more join. How many ${emojiSet.name}s now?`);
+                } else if (format === 'missingB') {
+                    speak(`You have ${a} ${emojiSet.name}${a !== 1 ? 's' : ''}. How many more ${emojiSet.name}s to make ${ans} altogether?`);
+                } else if (format === 'missingA') {
+                    speak(`We need ${ans} ${emojiSet.name}${ans !== 1 ? 's' : ''}. We have ${b}. How many are missing?`);
+                }
             } else {
-                speak(`You have ${a} ${emojiSet.name}${a !== 1 ? 's' : ''}, and ${b} ${emojiSet.name}${b !== 1 ? 's' : ''} leave! How many ${emojiSet.name}s are left?`);
+                if (format === 'normal') {
+                    speak(`You have ${a} ${emojiSet.name}${a !== 1 ? 's' : ''}, and ${b} leave. How many are left?`);
+                } else if (format === 'missingB') {
+                    speak(`You started with ${a} ${emojiSet.name}${a !== 1 ? 's' : ''}. Now there are ${ans}. How many left the group?`);
+                }
             }
         }, 500);
     };
@@ -117,20 +137,20 @@ const MathGame = () => {
     const handleAnswer = (val) => {
         if (feedback !== null) return; // Prevent multiple concurrent answer clicks
 
-        if (val === problem.ans) {
+        if (val === problem.targetAns) {
             setFeedback('correct');
 
             // Encouraging feedback with storytelling
             const correctPhrases = problem.op === '+'
                 ? [
-                    `Great job! ${problem.a} plus ${problem.b} equals ${problem.ans} ${problem.emojiName}s!`,
-                    `Perfect! Now you have ${problem.ans} ${problem.emojiName}s!`,
-                    `Wonderful! ${problem.ans} ${problem.emojiName}s altogether!`
+                    `Great job! You found the right number!`,
+                    `Perfect! ${problem.a} plus ${problem.b} makes ${problem.ans}!`,
+                    `Wonderful! You figured it out!`
                 ]
                 : [
-                    `Excellent! ${problem.a} minus ${problem.b} leaves ${problem.ans} ${problem.emojiName}${problem.ans !== 1 ? 's' : ''}!`,
-                    `That's right! ${problem.ans} ${problem.emojiName}${problem.ans !== 1 ? 's' : ''} left!`,
-                    `Super! You have ${problem.ans} ${problem.emojiName}${problem.ans !== 1 ? 's' : ''} remaining!`
+                    `Excellent! ${problem.a} minus ${problem.b} leaves ${problem.ans}!`,
+                    `That's right! You solved the puzzle!`,
+                    `Super! Amazing subtraction!`
                 ];
 
             speak(correctPhrases[Math.floor(Math.random() * correctPhrases.length)]);
@@ -176,6 +196,35 @@ const MathGame = () => {
         ));
     };
 
+    const renderNumberLine = () => {
+        const { a, b, ans, op, format } = problem;
+        if (ans > 15 || a > 15) return null; // Keep it clean for small numbers
+        const max = Math.max(10, (op === '+' ? ans : a) + 1);
+
+        return (
+            <div className="flex flex-col items-center my-6 w-full max-w-3xl bg-black/40 p-6 rounded-3xl border-2 border-green-500/40 shadow-inner">
+                <h3 className="text-green-400 font-bold mb-6 text-sm md:text-base uppercase tracking-widest">Jump on the Number Line! 🐸</h3>
+                <div className="flex justify-between w-full relative h-12 items-center px-4 md:px-8">
+                    {/* The Line */}
+                    <div className="absolute top-1/2 left-8 right-8 h-2 bg-gray-600 -translate-y-1/2 rounded-full border border-gray-800"></div>
+
+                    {Array.from({ length: max + 1 }).map((_, i) => (
+                        <div key={i} className="flex flex-col items-center z-10 relative">
+                            <div className={`w-4 h-4 rounded-full mb-3 flex items-center justify-center transition-all duration-500 ${i === 0 ? 'bg-white ring-2 ring-white/50' :
+                                    (i === a && format === 'normal') ? 'bg-cyan-400 ring-4 ring-cyan-400/40 animate-pulse scale-125' :
+                                        (i === ans && op === '+' && format === 'normal') ? 'bg-green-400 ring-4 ring-green-400/40 shadow-[0_0_10px_rgba(74,222,128,1)]' :
+                                            (i === ans && op === '-' && format === 'normal') ? 'bg-orange-400 ring-4 ring-orange-400/40 shadow-[0_0_10px_rgba(251,146,60,1)]' :
+                                                'bg-gray-400 hover:bg-gray-300 transform'
+                                }`}>
+                            </div>
+                            <span className={`font-black text-xl ${(i === a || i === ans) ? 'text-white drop-shadow-md' : 'text-gray-500'}`}>{i}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )
+    };
+
     return (
         <div className="flex flex-col items-center h-full gap-6 p-4">
             {/* Header: Level Select */}
@@ -211,8 +260,8 @@ const MathGame = () => {
             {/* Question Area */}
             <div className="flex-1 w-full max-w-4xl flex flex-col items-center justify-center card-neon p-8 relative">
 
-                {/* Visual Representation (only for the first 5 intro levels) */}
-                {currentLevel <= 5 && problem.a <= 10 && (
+                {/* Visual Representation */}
+                {(currentLevel <= 10 && problem.format === 'normal' && problem.a <= 10) && (
                     <div className="flex items-center gap-6 mb-8 bg-gradient-to-br from-purple-900/40 to-blue-900/40 p-8 rounded-3xl border-2 border-cyan-500/30 min-h-[140px] justify-center w-full shadow-[0_0_30px_rgba(6,182,212,0.2)]">
                         {problem.op === '+' ? (
                             <>
@@ -233,7 +282,7 @@ const MathGame = () => {
                 )}
 
                 {/* Story Text */}
-                {currentLevel <= 5 && problem.a <= 10 && (
+                {(currentLevel <= 10 && problem.a <= 10) && (
                     <div className="text-xl md:text-2xl text-center font-bold text-yellow-300 mb-6 px-4">
                         {problem.op === '+' ? (
                             <span>How many {problem.emojiName}s altogether? 🤔</span>
@@ -243,13 +292,32 @@ const MathGame = () => {
                     </div>
                 )}
 
+                {/* Number Line Helper (Levels 11-20, or for missing addends) */}
+                {((currentLevel > 10 && currentLevel <= 20) || problem.format !== 'normal') && renderNumberLine()}
+
                 {/* Equation Display */}
-                <div className="text-6xl md:text-8xl font-black text-white mb-16 flex items-center gap-4 md:gap-8 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                    <span className="text-cyan-300">{problem.a}</span>
-                    <span className={problem.op === '+' ? 'text-green-400' : 'text-orange-400'}>{problem.op}</span>
-                    <span className="text-cyan-300">{problem.b}</span>
+                <div className="text-6xl md:text-8xl font-black text-white mb-12 flex items-center gap-4 md:gap-8 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                    {problem.format === 'missingA' ? (
+                        <span className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 px-4 md:px-8 py-2 md:py-3 rounded-2xl min-w-[2ch] text-center border-4 border-dashed border-yellow-400/40 text-yellow-300 animate-pulse">?</span>
+                    ) : (
+                        <span className="text-cyan-300">{problem.a}</span>
+                    )}
+
+                    <span className={problem.op === '+' ? 'text-green-400' : 'text-orange-400'}>{problem.op === '+' ? '+' : '−'}</span>
+
+                    {problem.format === 'missingB' ? (
+                        <span className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 px-4 md:px-8 py-2 md:py-3 rounded-2xl min-w-[2ch] text-center border-4 border-dashed border-yellow-400/40 text-yellow-300 animate-pulse">?</span>
+                    ) : (
+                        <span className="text-cyan-300">{problem.b}</span>
+                    )}
+
                     <span className="text-gray-400">=</span>
-                    <span className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 px-8 py-3 rounded-2xl min-w-[2ch] text-center border-4 border-dashed border-yellow-400/40 text-yellow-300 animate-pulse">?</span>
+
+                    {problem.format === 'normal' ? (
+                        <span className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 px-4 md:px-8 py-2 md:py-3 rounded-2xl min-w-[2ch] text-center border-4 border-dashed border-yellow-400/40 text-yellow-300 animate-pulse">?</span>
+                    ) : (
+                        <span className="text-green-400 bg-green-900/40 px-4 rounded-2xl border border-green-500/30">{problem.ans}</span>
+                    )}
                 </div>
 
                 {/* Options */}
@@ -268,13 +336,13 @@ const MathGame = () => {
                                 disabled={feedback !== null}
                                 className={`
                                 text-6xl md:text-7xl font-black py-10 px-6 rounded-3xl transition-all duration-300 transform
-                                ${feedback === 'correct' && opt === problem.ans
+                                ${feedback === 'correct' && opt === problem.targetAns
                                         ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-[0_0_50px_rgba(34,197,94,0.8)] scale-110 border-4 border-green-300 animate-pulse z-20'
                                         : feedback === null
                                             ? `bg-gradient-to-br ${colors[idx % colors.length]} text-white border-4 hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-105 hover:-translate-y-1 active:scale-95`
                                             : 'bg-gradient-to-br from-gray-700 to-gray-800 text-white border-2 border-gray-600'
                                     }
-                                ${feedback === 'wrong' && opt !== problem.ans ? 'opacity-30 scale-90 grayscale' : ''}
+                                ${feedback === 'wrong' && opt !== problem.targetAns ? 'opacity-30 scale-90 grayscale' : ''}
                                 shadow-xl
                             `}
                             >
