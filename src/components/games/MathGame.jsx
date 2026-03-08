@@ -102,10 +102,17 @@ const MathGame = () => {
 
         // Generate answer options
         const opts = new Set([targetAns]);
-        const optionRange = Math.max(6, targetAns + 3);
+        let attempts = 0;
+        while (opts.size < 4 && attempts < 50) {
+            let r = Math.max(0, targetAns - 3 + Math.floor(Math.random() * 10));
+            if (r !== targetAns) opts.add(r);
+            attempts++;
+        }
+        // Failsafe to guarantee 4 options
+        let nextOpt = 0;
         while (opts.size < 4) {
-            let r = Math.max(0, targetAns - 2 + Math.floor(Math.random() * 5));
-            if (r !== targetAns && r <= optionRange) opts.add(r);
+            if (!opts.has(nextOpt)) opts.add(nextOpt);
+            nextOpt++;
         }
         setOptions(Array.from(opts).sort(() => Math.random() - 0.5));
         setFeedback(null);
@@ -211,10 +218,10 @@ const MathGame = () => {
                     {Array.from({ length: max + 1 }).map((_, i) => (
                         <div key={i} className="flex flex-col items-center z-10 relative">
                             <div className={`w-4 h-4 rounded-full mb-3 flex items-center justify-center transition-all duration-500 ${i === 0 ? 'bg-white ring-2 ring-white/50' :
-                                    (i === a && format === 'normal') ? 'bg-cyan-400 ring-4 ring-cyan-400/40 animate-pulse scale-125' :
-                                        (i === ans && op === '+' && format === 'normal') ? 'bg-green-400 ring-4 ring-green-400/40 shadow-[0_0_10px_rgba(74,222,128,1)]' :
-                                            (i === ans && op === '-' && format === 'normal') ? 'bg-orange-400 ring-4 ring-orange-400/40 shadow-[0_0_10px_rgba(251,146,60,1)]' :
-                                                'bg-gray-400 hover:bg-gray-300 transform'
+                                (i === a && format === 'normal') ? 'bg-cyan-400 ring-4 ring-cyan-400/40 animate-pulse scale-125' :
+                                    (i === ans && op === '+' && format === 'normal') ? 'bg-green-400 ring-4 ring-green-400/40 shadow-[0_0_10px_rgba(74,222,128,1)]' :
+                                        (i === ans && op === '-' && format === 'normal') ? 'bg-orange-400 ring-4 ring-orange-400/40 shadow-[0_0_10px_rgba(251,146,60,1)]' :
+                                            'bg-gray-400 hover:bg-gray-300 transform'
                                 }`}>
                             </div>
                             <span className={`font-black text-xl ${(i === a || i === ans) ? 'text-white drop-shadow-md' : 'text-gray-500'}`}>{i}</span>
